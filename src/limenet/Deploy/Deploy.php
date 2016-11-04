@@ -5,7 +5,6 @@ namespace limenet\Deploy;
 use Curl\Curl;
 use Symfony\Component\HttpFoundation\IpUtils;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Telegram\Bot\Api as TelegramApi;
 
 class Deploy
@@ -107,7 +106,9 @@ class Deploy
 
     /**
      * Checks whether  an incoming request is authorized i.e. whether it's coming from GitHub.
+     *
      * @see https://help.github.com/articles/what-ip-addresses-does-github-use-that-i-should-whitelist/
+     *
      * @return bool
      */
     protected function checkValidRequest() : bool
@@ -155,7 +156,6 @@ class Deploy
             'returnValue' => $returnValue,
             ];
     }
-
 
     /**
      * Notifies Rollbar about the new version.
