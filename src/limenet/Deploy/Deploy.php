@@ -80,14 +80,13 @@ class Deploy
 
     public function run()
     {
-        if (!$this->checkValidRequest() && false) {
+        if (!$this->checkValidRequest()) {
             header('HTTP/1.1 403 Unauthorized', true, 403);
             die();
         }
 
-        // header('Content-Type: text/json');
+        header('Content-Type: text/json');
 
-        $json = file_get_contents(__DIR__.'/payload.json');
         $this->payload = json_decode(Request::createFromGlobals()->request->get('payload') ?? $json, true);
 
         if (!$this->checkBranch()) {
