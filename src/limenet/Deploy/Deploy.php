@@ -148,7 +148,7 @@ class Deploy
             $updateMaster = '&& git checkout master && git pull && git checkout '.$this->branch;
         }
 
-        exec('echo "Changing directory..." && cd '.$this->basepath.' && echo "Git reset + pulling..." && git reset --hard HEAD && git pull '.$updateMaster.' && echo "Installing composer dependencies..." && composer install --no-dev', $output, $returnValue);
+        exec('echo "Changing directory..." && cd '.$this->basepath.' && echo "Git reset + pulling..." && git reset --hard HEAD && git pull '.$updateMaster.' && echo "Installing composer dependencies..." && composer install --no-dev && yarn install --production', $output, $returnValue);
 
         return [
             'output'      => $output,
