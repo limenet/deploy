@@ -97,8 +97,14 @@ class Deploy
 
         $this->updateCode();
         $this->runCleanCache();
-        $this->sendTelegram();
-        $this->rollbarDeploy();
+
+        if (!empty($this->telegram)) {
+            $this->sendTelegram();
+        }
+
+        if (!empty($this->rollbar)) {
+            $this->rollbarDeploy();
+        }
 
         echo json_encode(['status' => 'gitpull-composerup-happylife']);
     }
@@ -143,17 +149,28 @@ class Deploy
         $output = [];
         $returnValue = 0;
 
-        $updateMaster = '';
+        $updateMaster = 'ls'; // dummy
+
         if ($this->branch !== 'master') {
             $updateMaster = '&& git checkout master && git pull && git checkout '.$this->branch;
         }
 
-        exec('echo "Changing directory..." && cd '.$this->basepath.' && echo "Git reset + pulling..." && git reset --hard HEAD && git pull '.$updateMaster.' && echo "Installing composer dependencies..." && composer install --no-dev && yarn install --production', $output, $returnValue);
+
+        $commands = [
+            'cd '.$this->basepath,
+            'git reset --hard HEAD',
+            'git pull',
+            $updateMaster,
+            'composer install --no-dev',
+            'yarn install --production',
+        ];
+
+        exec(implode(' && ', $commands), $output, $returnValue);
 
         return [
             'output'      => $output,
             'returnValue' => $returnValue,
-            ];
+        ];
     }
 
     /**
