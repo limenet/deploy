@@ -92,7 +92,7 @@ class Deploy
         if (!$this->checkBranch()) {
             echo json_encode(['status' => 'notmybranch--notatag-aintnobodygottimefordat']);
 
-            return $response;
+            return;
         }
 
         $this->updateCode();
