@@ -155,7 +155,6 @@ class Deploy
             $updateMaster = '&& git checkout master && git pull && git checkout '.$this->branch;
         }
 
-
         $commands = [
             'cd '.$this->basepath,
             'git reset --hard HEAD',
