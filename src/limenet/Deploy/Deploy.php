@@ -134,6 +134,8 @@ class Deploy
     {
         if ($this->branch === 'master') {
             return strpos($this->payload['ref'], 'refs/tags/') !== false;
+        } elseif ($this->branch === 'dev-master') {
+            return $this->payload['ref'] === 'refs/heads/master';
         } else {
             return $this->payload['ref'] === 'refs/heads/'.$this->branch;
         }
