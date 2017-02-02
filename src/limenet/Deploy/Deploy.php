@@ -156,7 +156,6 @@ class Deploy
         }
 
         $commands = [
-            'cd '.$this->basepath,
             'git reset --hard HEAD',
             'git pull',
             $updateMaster,
@@ -164,7 +163,9 @@ class Deploy
             'yarn install --production',
         ];
 
-        exec(implode(' && ', $commands), $output, $returnValue);
+        foreach ($commands as $command) {
+            exec('cd '.$this->basepath.' && '.$command, $output, $returnValue);
+        }
 
         return [
             'output'      => $output,
