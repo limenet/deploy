@@ -6,6 +6,7 @@ use Curl\Curl;
 use Symfony\Component\HttpFoundation\IpUtils;
 use Symfony\Component\HttpFoundation\Request;
 use Telegram\Bot\Api as TelegramApi;
+use ReflectionClass;
 
 class Deploy
 {
@@ -25,6 +26,15 @@ class Deploy
 
     private $cleanCache;
 
+    private $postDeployAdapters;
+
+    public function addAdapter(AdapterInterface $adapter) {
+        $reflect = new ReflectionClass($adapter);
+        if($reflect->implementsInterface(PostDeployAdapterInterface::class)) {
+            $postDeployAdapters[] = $adapter;
+        }
+    }
+
     public function basepath(string $basepath)
     {
         $this->basepath = $basepath;
@@ -38,11 +48,6 @@ class Deploy
     public function env(string $env)
     {
         $this->env = $env;
-    }
-
-    public function telegram(array $telegram)
-    {
-        $this->telegram = $telegram;
     }
 
     public function rollbar(array $rollbar)
@@ -98,8 +103,8 @@ class Deploy
         $this->updateCode();
         $this->runCleanCache();
 
-        if (!empty($this->telegram)) {
-            $this->sendTelegram();
+        foreach ($this->postDeployAdapters as $adapter) {
+            $adapter->run();
         }
 
         if (!empty($this->rollbar)) {
@@ -188,26 +193,6 @@ class Deploy
             'environment'    => $this->env,
             'revision'       => $this->getVersion(),
             'local_username' => 'limenet/deploy',
-        ]);
-    }
-
-    /**
-     * Sends a notification about the deploy via Telegram.
-     *
-     * @param array $this->payload the payload from GitHub
-     *
-     * @return mixed
-     */
-    protected function sendTelegram()
-    {
-        $telegram = new TelegramApi($this->telegram['bot_token']);
-
-        $telegram->sendMessage([
-          'chat_id'                  => $this->telegram['chat_id'],
-          'parse_mode'               => 'markdown',
-          'disable_web_page_preview' => true,
-          'disable_notification'     => true,
-          'text'                     => '`'.$this->getVersion().'` was deployed on *'.gethostname().'*'."\n".'['.substr($this->payload['head_commit']['id'], 0, 8).']('.$this->payload['head_commit']['url'].') `'.$this->payload['head_commit']['message'].'` by [@'.$this->payload['head_commit']['author']['username'].'](https://github.com/'.$this->payload['head_commit']['author']['username'].')',
         ]);
     }
 }
