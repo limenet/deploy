@@ -65,7 +65,7 @@ class Deploy
         $this->cleanCache = $cleanCache;
     }
 
-    private function getVersion()
+    public function getVersion()
     {
         if (is_callable($this->version)) {
             return call_user_func($this->version);
