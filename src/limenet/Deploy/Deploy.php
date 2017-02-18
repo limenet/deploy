@@ -3,10 +3,9 @@
 namespace limenet\Deploy;
 
 use Curl\Curl;
+use ReflectionClass;
 use Symfony\Component\HttpFoundation\IpUtils;
 use Symfony\Component\HttpFoundation\Request;
-use Telegram\Bot\Api as TelegramApi;
-use ReflectionClass;
 
 class Deploy
 {
@@ -28,9 +27,10 @@ class Deploy
 
     private $postDeployAdapters;
 
-    public function addAdapter(AdapterInterface $adapter) {
+    public function addAdapter(AdapterInterface $adapter)
+    {
         $reflect = new ReflectionClass($adapter);
-        if($reflect->implementsInterface(PostDeployAdapterInterface::class)) {
+        if ($reflect->implementsInterface(PostDeployAdapterInterface::class)) {
             $postDeployAdapters[] = $adapter;
         }
     }
