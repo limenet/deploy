@@ -31,7 +31,7 @@ class Deploy
     {
         $reflect = new ReflectionClass($adapter);
         if ($reflect->implementsInterface(PostDeployAdapterInterface::class)) {
-            $postDeployAdapters[] = $adapter;
+            $this->postDeployAdapters[] = $adapter;
         }
     }
 
@@ -104,7 +104,7 @@ class Deploy
         $this->runCleanCache();
 
         foreach ($this->postDeployAdapters as $adapter) {
-            $adapter->run();
+            $adapter->run($this, $this->payload);
         }
 
         if (!empty($this->rollbar)) {
