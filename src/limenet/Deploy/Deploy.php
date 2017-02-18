@@ -2,7 +2,6 @@
 
 namespace limenet\Deploy;
 
-use Curl\Curl;
 use ReflectionClass;
 use Symfony\Component\HttpFoundation\IpUtils;
 use Symfony\Component\HttpFoundation\Request;
@@ -27,7 +26,7 @@ class Deploy
 
     private $postDeployAdapters;
 
-    public function addAdapter(AdapterInterface $adapter)
+    public function addAdapter(AdapterInterface $adapter) : void
     {
         $reflect = new ReflectionClass($adapter);
         if ($reflect->implementsInterface(PostDeployAdapterInterface::class)) {
@@ -35,32 +34,42 @@ class Deploy
         }
     }
 
-    public function basepath(string $basepath)
+    public function getBasepath() : string
+    {
+        return $this->basepath;
+    }
+
+    public function setBasepath(string $basepath) : void
     {
         $this->basepath = $basepath;
     }
 
-    public function branch(string $branch)
+    public function getBranch() : string
+    {
+        return $this->branch;
+    }
+
+    public function setBranch(string $branch) : void
     {
         $this->branch = $branch;
     }
 
-    public function env(string $env)
+    public function getEnv() : string
+    {
+        return $this->env;
+    }
+
+    public function setEnv(string $env) : void
     {
         $this->env = $env;
     }
 
-    public function rollbar(array $rollbar)
-    {
-        $this->rollbar = $rollbar;
-    }
-
-    public function version(callable $version)
+    public function setVersion(callable $version) : void
     {
         $this->version = $version;
     }
 
-    public function cleanCache(callable $cleanCache)
+    public function setCleanCache(callable $cleanCache) : void
     {
         $this->cleanCache = $cleanCache;
     }
@@ -83,7 +92,7 @@ class Deploy
         return false;
     }
 
-    public function run()
+    public function run() : void
     {
         if (!$this->checkValidRequest()) {
             header('HTTP/1.1 403 Unauthorized', true, 403);
@@ -151,7 +160,7 @@ class Deploy
      *
      * @return array
      */
-    protected function updateCode()
+    protected function updateCode() : array
     {
         $output = [];
         $returnValue = 0;
@@ -178,21 +187,5 @@ class Deploy
             'output'      => $output,
             'returnValue' => $returnValue,
         ];
-    }
-
-    /**
-     * Notifies Rollbar about the new version.
-     *
-     * @return void
-     */
-    protected function rollbarDeploy()
-    {
-        $curl = new Curl();
-        $curl->post('https://api.rollbar.com/api/1/deploy/', [
-            'access_token'   => $this->rollbar['token'],
-            'environment'    => $this->env,
-            'revision'       => $this->getVersion(),
-            'local_username' => 'limenet/deploy',
-        ]);
     }
 }
