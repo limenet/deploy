@@ -12,4 +12,33 @@ class DeployTest extends TestCase {
 
         $this->assertSame('master', $deploy->getBranch());
     }
+
+    function testBasepath() : void
+    {
+        $deploy = new Deploy();
+        $deploy->setBasepath(__DIR__);
+
+        $this->assertSame(__DIR__, $deploy->getBasepath());
+    }
+
+    function testEnv() : void
+    {
+        $deploy = new Deploy();
+        $deploy->setEnv('testing');
+
+        $this->assertSame('testing', $deploy->getEnv());
+    }
+
+    function testVersion() : void
+    {
+        $deploy = new Deploy();
+
+        $this->assertFalse($deploy->getVersion());
+
+        $deploy->setVersion(function() {
+            return '1.0.2-beta+deadbeef';
+        });
+
+        $this->assertSame('1.0.2-beta+deadbeef', $deploy->getVersion());
+    }
 }
