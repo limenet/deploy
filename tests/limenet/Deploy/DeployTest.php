@@ -42,20 +42,39 @@ class DeployTest extends TestCase {
         $this->assertSame('1.0.2-beta+deadbeef', $deploy->getVersion());
     }
 
-    function testAddPostDeployAdapter() : void
+    function testCleanCache() : void
+    {
+        $deploy = new Deploy();
+
+        $this->assertTrue($deploy->setCleanCache(function() {
+            // clear cache...
+            return 'cache cleaned';
+        }));
+    }
+
+    function testAddAdapter() : void
     {
         $adapter = $this->getMockBuilder('limenet\Deploy\AdapterInterface')->getMock();
-        $adapterPostDeploy = $this->getMockBuilder('limenet\Deploy\PostDeployAdapterInterface')->getMock();
 
         $deploy = new Deploy();
 
         $this->assertFalse($deploy->checkAdapterAdded($adapter));
-        $this->assertFalse($deploy->checkAdapterAdded($adapterPostDeploy));
 
         $this->assertFalse($deploy->addAdapter($adapter));
-        $this->assertTrue($deploy->addAdapter($adapterPostDeploy));
 
         $this->assertFalse($deploy->checkAdapterAdded($adapter));
-        $this->assertTrue($deploy->checkAdapterAdded($adapterPostDeploy));
+    }
+
+    function testAddPostDeployAdapter() : void
+    {
+        $adapter = $this->getMockBuilder('limenet\Deploy\PostDeployAdapterInterface')->getMock();
+
+        $deploy = new Deploy();
+
+        $this->assertFalse($deploy->checkAdapterAdded($adapter));
+
+        $this->assertTrue($deploy->addAdapter($adapter));
+
+        $this->assertTrue($deploy->checkAdapterAdded($adapter));
     }
 }
