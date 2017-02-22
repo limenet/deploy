@@ -27,8 +27,10 @@ class Deploy
         $reflect = new ReflectionClass($adapter);
         if ($reflect->implementsInterface(PostDeployAdapterInterface::class)) {
             $this->postDeployAdapters[] = $adapter;
+
             return true;
         }
+
         return false;
     }
 

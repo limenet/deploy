@@ -1,11 +1,11 @@
 <?php
 
-use PHPUnit\Framework\TestCase;
 use limenet\Deploy\Deploy;
+use PHPUnit\Framework\TestCase;
 
-class DeployTest extends TestCase {
-
-    function testBranch() : void
+class DeployTest extends TestCase
+{
+    public function testBranch() : void
     {
         $deploy = new Deploy();
         $this->assertTrue($deploy->setBranch('master'));
@@ -13,7 +13,7 @@ class DeployTest extends TestCase {
         $this->assertSame('master', $deploy->getBranch());
     }
 
-    function testBasepath() : void
+    public function testBasepath() : void
     {
         $deploy = new Deploy();
         $this->assertTrue($deploy->setBasepath(__DIR__));
@@ -21,7 +21,7 @@ class DeployTest extends TestCase {
         $this->assertSame(__DIR__, $deploy->getBasepath());
     }
 
-    function testEnv() : void
+    public function testEnv() : void
     {
         $deploy = new Deploy();
         $this->assertTrue($deploy->setEnv('testing'));
@@ -29,30 +29,30 @@ class DeployTest extends TestCase {
         $this->assertSame('testing', $deploy->getEnv());
     }
 
-    function testVersion() : void
+    public function testVersion() : void
     {
         $deploy = new Deploy();
 
         $this->assertFalse($deploy->getVersion());
 
-        $this->assertTrue($deploy->setVersion(function() {
+        $this->assertTrue($deploy->setVersion(function () {
             return '1.0.2-beta+deadbeef';
         }));
 
         $this->assertSame('1.0.2-beta+deadbeef', $deploy->getVersion());
     }
 
-    function testCleanCache() : void
+    public function testCleanCache() : void
     {
         $deploy = new Deploy();
 
-        $this->assertTrue($deploy->setCleanCache(function() {
+        $this->assertTrue($deploy->setCleanCache(function () {
             // clear cache...
             return 'cache cleaned';
         }));
     }
 
-    function testAddAdapter() : void
+    public function testAddAdapter() : void
     {
         $adapter = $this->getMockBuilder('limenet\Deploy\AdapterInterface')->getMock();
 
@@ -65,7 +65,7 @@ class DeployTest extends TestCase {
         $this->assertFalse($deploy->checkAdapterAdded($adapter));
     }
 
-    function testAddPostDeployAdapter() : void
+    public function testAddPostDeployAdapter() : void
     {
         $adapter = $this->getMockBuilder('limenet\Deploy\PostDeployAdapterInterface')->getMock();
 
