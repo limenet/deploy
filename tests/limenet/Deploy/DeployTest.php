@@ -41,4 +41,17 @@ class DeployTest extends TestCase {
 
         $this->assertSame('1.0.2-beta+deadbeef', $deploy->getVersion());
     }
+
+    function testAddPostDeployAdapter() : void
+    {
+        $adapter = $this->getMockBuilder('limenet\Deploy\PostDeployAdapterInterface')->getMock();
+
+        $deploy = new Deploy();
+
+        $this->assertFalse($deploy->checkAdapterAdded($adapter));
+
+        $deploy->addAdapter($adapter);
+
+        $this->assertTrue($deploy->checkAdapterAdded($adapter));
+    }
 }

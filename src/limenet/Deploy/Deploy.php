@@ -20,7 +20,7 @@ class Deploy
 
     private $cleanCache;
 
-    private $postDeployAdapters;
+    private $postDeployAdapters = [];
 
     public function addAdapter(AdapterInterface $adapter) : void
     {
@@ -28,6 +28,17 @@ class Deploy
         if ($reflect->implementsInterface(PostDeployAdapterInterface::class)) {
             $this->postDeployAdapters[] = $adapter;
         }
+    }
+
+    public function checkAdapterAdded(AdapterInterface $adapter) : bool
+    {
+        foreach ($this->postDeployAdapters as $loadedAdapter) {
+            if ($adapter instanceof $loadedAdapter) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public function getBasepath() : string
