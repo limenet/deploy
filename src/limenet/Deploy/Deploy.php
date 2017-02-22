@@ -16,10 +16,6 @@ class Deploy
 
     private $payload;
 
-    private $telegram;
-
-    private $rollbar;
-
     private $version;
 
     private $cleanCache;
@@ -101,7 +97,7 @@ class Deploy
 
         header('Content-Type: text/json');
 
-        $this->payload = json_decode(Request::createFromGlobals()->request->get('payload') ?? $json, true);
+        $this->payload = json_decode(Request::createFromGlobals()->request->get('payload'), true);
 
         if (!$this->checkBranch()) {
             echo json_encode(['status' => 'notmybranch--notatag-aintnobodygottimefordat']);
@@ -114,10 +110,6 @@ class Deploy
 
         foreach ($this->postDeployAdapters as $adapter) {
             $adapter->run($this, $this->payload);
-        }
-
-        if (!empty($this->rollbar)) {
-            $this->rollbarDeploy();
         }
 
         echo json_encode(['status' => 'gitpull-composerup-happylife']);
@@ -136,7 +128,7 @@ class Deploy
 
         $originatingIp = $request->server->has('HTTP_CF_CONNECTING_IP') ? $request->server->get('HTTP_CF_CONNECTING_IP') : $request->server->get('REMOTE_ADDR');
 
-        return $isIpAllowed = IpUtils::checkIp($originatingIp, ['192.30.252.0/22', '2620:112:3000::/44']);
+        return IpUtils::checkIp($originatingIp, ['192.30.252.0/22', '2620:112:3000::/44']);
     }
 
     /**
