@@ -8,7 +8,7 @@ class DeployTest extends TestCase {
     function testBranch() : void
     {
         $deploy = new Deploy();
-        $deploy->setBranch('master');
+        $this->assertTrue($deploy->setBranch('master'));
 
         $this->assertSame('master', $deploy->getBranch());
     }
@@ -16,7 +16,7 @@ class DeployTest extends TestCase {
     function testBasepath() : void
     {
         $deploy = new Deploy();
-        $deploy->setBasepath(__DIR__);
+        $this->assertTrue($deploy->setBasepath(__DIR__));
 
         $this->assertSame(__DIR__, $deploy->getBasepath());
     }
@@ -24,7 +24,7 @@ class DeployTest extends TestCase {
     function testEnv() : void
     {
         $deploy = new Deploy();
-        $deploy->setEnv('testing');
+        $this->assertTrue($deploy->setEnv('testing'));
 
         $this->assertSame('testing', $deploy->getEnv());
     }
@@ -35,23 +35,27 @@ class DeployTest extends TestCase {
 
         $this->assertFalse($deploy->getVersion());
 
-        $deploy->setVersion(function() {
+        $this->assertTrue($deploy->setVersion(function() {
             return '1.0.2-beta+deadbeef';
-        });
+        }));
 
         $this->assertSame('1.0.2-beta+deadbeef', $deploy->getVersion());
     }
 
     function testAddPostDeployAdapter() : void
     {
-        $adapter = $this->getMockBuilder('limenet\Deploy\PostDeployAdapterInterface')->getMock();
+        $adapter = $this->getMockBuilder('limenet\Deploy\AdapterInterface')->getMock();
+        $adapterPostDeploy = $this->getMockBuilder('limenet\Deploy\PostDeployAdapterInterface')->getMock();
 
         $deploy = new Deploy();
 
         $this->assertFalse($deploy->checkAdapterAdded($adapter));
+        $this->assertFalse($deploy->checkAdapterAdded($adapterPostDeploy));
 
-        $deploy->addAdapter($adapter);
+        $this->assertFalse($deploy->addAdapter($adapter));
+        $this->assertTrue($deploy->addAdapter($adapterPostDeploy));
 
-        $this->assertTrue($deploy->checkAdapterAdded($adapter));
+        $this->assertFalse($deploy->checkAdapterAdded($adapter));
+        $this->assertTrue($deploy->checkAdapterAdded($adapterPostDeploy));
     }
 }

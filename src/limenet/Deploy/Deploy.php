@@ -22,12 +22,14 @@ class Deploy
 
     private $postDeployAdapters = [];
 
-    public function addAdapter(AdapterInterface $adapter) : void
+    public function addAdapter(AdapterInterface $adapter) : bool
     {
         $reflect = new ReflectionClass($adapter);
         if ($reflect->implementsInterface(PostDeployAdapterInterface::class)) {
             $this->postDeployAdapters[] = $adapter;
+            return true;
         }
+        return false;
     }
 
     public function checkAdapterAdded(AdapterInterface $adapter) : bool
@@ -46,9 +48,11 @@ class Deploy
         return $this->basepath;
     }
 
-    public function setBasepath(string $basepath) : void
+    public function setBasepath(string $basepath) : bool
     {
         $this->basepath = $basepath;
+
+        return true;
     }
 
     public function getBranch() : string
@@ -56,9 +60,11 @@ class Deploy
         return $this->branch;
     }
 
-    public function setBranch(string $branch) : void
+    public function setBranch(string $branch) : bool
     {
         $this->branch = $branch;
+
+        return true;
     }
 
     public function getEnv() : string
@@ -66,19 +72,25 @@ class Deploy
         return $this->env;
     }
 
-    public function setEnv(string $env) : void
+    public function setEnv(string $env) : bool
     {
         $this->env = $env;
+
+        return true;
     }
 
-    public function setVersion(callable $version) : void
+    public function setVersion(callable $version) : bool
     {
         $this->version = $version;
+
+        return true;
     }
 
-    public function setCleanCache(callable $cleanCache) : void
+    public function setCleanCache(callable $cleanCache) : bool
     {
         $this->cleanCache = $cleanCache;
+
+        return true;
     }
 
     public function getVersion()
