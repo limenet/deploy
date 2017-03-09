@@ -34,7 +34,7 @@ class Deploy
         return false;
     }
 
-    public function checkAdapterAdded(AdapterInterface $adapter) : bool
+    public function isAdapterAdded(AdapterInterface $adapter) : bool
     {
         foreach ($this->postDeployAdapters as $loadedAdapter) {
             if ($adapter instanceof $loadedAdapter) {

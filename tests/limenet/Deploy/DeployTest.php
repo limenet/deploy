@@ -58,11 +58,11 @@ class DeployTest extends TestCase
 
         $deploy = new Deploy();
 
-        $this->assertFalse($deploy->checkAdapterAdded($adapter));
+        $this->assertFalse($deploy->isAdapterAdded($adapter));
 
         $this->assertFalse($deploy->addAdapter($adapter));
 
-        $this->assertFalse($deploy->checkAdapterAdded($adapter));
+        $this->assertFalse($deploy->isAdapterAdded($adapter));
     }
 
     public function testAddPostDeployAdapter() : void
@@ -71,10 +71,10 @@ class DeployTest extends TestCase
 
         $deploy = new Deploy();
 
-        $this->assertFalse($deploy->checkAdapterAdded($adapter));
+        $this->assertFalse($deploy->isAdapterAdded($adapter));
 
         $this->assertTrue($deploy->addAdapter($adapter));
 
-        $this->assertTrue($deploy->checkAdapterAdded($adapter));
+        $this->assertTrue($deploy->isAdapterAdded($adapter));
     }
 }
