@@ -14,8 +14,6 @@ class Deploy
 
     private $env;
 
-    private $payload;
-
     private $version;
 
     private $cleanCache;
