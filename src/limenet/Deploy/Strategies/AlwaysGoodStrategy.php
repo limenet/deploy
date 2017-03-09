@@ -2,11 +2,8 @@
 
 namespace limenet\Deploy\Strategies;
 
-use Symfony\Component\HttpFoundation\IpUtils;
-use Symfony\Component\HttpFoundation\Request;
-
-class AlwaysGoodStrategy implements StrategyInterface {
-
+class AlwaysGoodStrategy implements StrategyInterface
+{
     public function checkValidRequest() : bool
     {
         return true;
@@ -21,5 +18,4 @@ class AlwaysGoodStrategy implements StrategyInterface {
     {
         return true;
     }
-
 }

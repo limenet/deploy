@@ -5,8 +5,8 @@ namespace limenet\Deploy\Strategies;
 use Symfony\Component\HttpFoundation\IpUtils;
 use Symfony\Component\HttpFoundation\Request;
 
-class GithubStrategy implements StrategyInterface {
-
+class GithubStrategy implements StrategyInterface
+{
     private $payload;
 
     public function __construct()
@@ -26,10 +26,10 @@ class GithubStrategy implements StrategyInterface {
 
     public function isBranch(string $branch) : bool
     {
-        if (in_array($branch, ['tag', 'master'])) {
+        if (in_array($branch, ['tag', 'master'], true)) {
             return $this->isTag();
         } elseif ($branch === 'dev-master') {
-             return $this->payload['ref'] === 'refs/heads/master';
+            return $this->payload['ref'] === 'refs/heads/master';
         } else {
             return $this->payload['ref'] === 'refs/heads/'.$branch;
         }
@@ -39,5 +39,4 @@ class GithubStrategy implements StrategyInterface {
     {
         return strpos($this->payload['ref'], 'refs/tags/') !== false;
     }
-
 }

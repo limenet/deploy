@@ -2,10 +2,9 @@
 
 namespace limenet\Deploy;
 
-use ReflectionClass;
-use Symfony\Component\HttpFoundation\IpUtils;
-use Symfony\Component\HttpFoundation\Request;
 use limenet\Deploy\Strategies\StrategyInterface;
+use ReflectionClass;
+use Symfony\Component\HttpFoundation\Request;
 
 class Deploy
 {
