@@ -1,9 +1,9 @@
 <?php
 
 use limenet\Deploy\Deploy;
+use limenet\Deploy\PostDeployAdapterTempFile;
 use limenet\Deploy\Strategies\AlwaysGoodStrategy;
 use PHPUnit\Framework\TestCase;
-use limenet\Deploy\PostDeployAdapterTempFile;
 
 class DeployTest extends TestCase
 {
@@ -77,7 +77,7 @@ class DeployTest extends TestCase
     public function testCompleteDeploy() : void
     {
         $deploy = $this->getMockBuilder(Deploy::class)
-            ->setMethods(array('updateCode'))
+            ->setMethods(['updateCode'])
             ->getMock();
         $deploy->expects($this->any())
             ->method('updateCode')
