@@ -76,7 +76,13 @@ class DeployTest extends TestCase
 
     public function testCompleteDeploy() : void
     {
-        $deploy = new Deploy();
+        $deploy = $this->getMockBuilder(Deploy::class)
+            ->setMethods(array('updateCode'))
+            ->getMock();
+        $deploy->expects($this->any())
+            ->method('updateCode')
+            ->will($this->returnValue(['output' => 'mocked', 'returnValue' => '0']));
+
         $deploy->setBasepath(BASEPATH);
         $deploy->setStrategy(new AlwaysGoodStrategy());
         $deploy->addAdapter(new PostDeployAdapterTempFile());
