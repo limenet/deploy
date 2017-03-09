@@ -1,9 +1,9 @@
 <?php
 
 use limenet\Deploy\Deploy;
-use PHPUnit\Framework\TestCase;
-use limenet\Deploy\Strategies\AlwaysGoodStrategy;
 use limenet\Deploy\Strategies\AlwaysBadStrategy;
+use limenet\Deploy\Strategies\AlwaysGoodStrategy;
+use PHPUnit\Framework\TestCase;
 
 class DeployTest extends TestCase
 {
@@ -89,8 +89,8 @@ class DeployTest extends TestCase
     public function testDoubleSetStrategy() : void
     {
         $deploy = new Deploy();
-        $this->assertTrue($deploy->setStrategy(new limenet\Deploy\Strategies\AlwaysGoodStrategy));
-        $this->assertFalse($deploy->setStrategy(new limenet\Deploy\Strategies\AlwaysGoodStrategy));
+        $this->assertTrue($deploy->setStrategy(new limenet\Deploy\Strategies\AlwaysGoodStrategy()));
+        $this->assertFalse($deploy->setStrategy(new limenet\Deploy\Strategies\AlwaysGoodStrategy()));
     }
 
     public function testAlwaysGoodStrategy() : void
