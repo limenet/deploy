@@ -174,8 +174,8 @@ class Deploy
 
         $updateMaster = 'ls'; // dummy
 
-        if ($this->branch !== 'master') {
-            $updateMaster = '&& git checkout master && git pull && git checkout '.$this->branch;
+        if ($this->getBranch() !== 'master') {
+            $updateMaster = '&& git checkout master && git pull && git checkout '.$this->getBranch();
         }
 
         $commands = [
@@ -187,7 +187,7 @@ class Deploy
         ];
 
         foreach ($commands as $command) {
-            exec('cd '.$this->basepath.' && '.$command, $output, $returnValue);
+            exec('cd '.$this->getBasepath().' && '.$command, $output, $returnValue);
         }
 
         return [
