@@ -6,5 +6,7 @@ interface StrategyInterface
 {
     public function checkValidRequest() : bool;
 
-    public function getPayloadBranch() : string;
+    public function isBranch(string $branch) : string;
+
+    public function isTag() : bool;
 }

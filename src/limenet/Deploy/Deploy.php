@@ -5,6 +5,7 @@ namespace limenet\Deploy;
 use ReflectionClass;
 use Symfony\Component\HttpFoundation\IpUtils;
 use Symfony\Component\HttpFoundation\Request;
+use limenet\Deploy\Strategies\StrategyInterface;
 
 class Deploy
 {
@@ -21,6 +22,24 @@ class Deploy
     private $cleanCache;
 
     private $postDeployAdapters = [];
+
+    private $strategy;
+
+    public function setStrategy(StrategyInterface $strategy) : bool
+    {
+        if ($this->strategy) {
+            return false;
+        }
+
+        $this->strategy = $strategy;
+
+        return true;
+    }
+
+    public function isStrategySet() : bool
+    {
+        return is_null($this->strategy);
+    }
 
     public function addAdapter(AdapterInterface $adapter) : bool
     {
@@ -115,7 +134,11 @@ class Deploy
 
     public function run() : void
     {
-        if (!$this->checkValidRequest()) {
+        if (!$this->isStrategySet()) {
+            throw new \Exception('No strategy set');
+        }
+
+        if (!$this->strategy->checkValidRequest()) {
             header('HTTP/1.1 403 Unauthorized', true, 403);
             die();
         }
@@ -124,7 +147,7 @@ class Deploy
 
         $this->payload = json_decode(Request::createFromGlobals()->request->get('payload'), true);
 
-        if (!$this->checkBranch()) {
+        if (!$this->strategy->isBranch($this->getBranch())) {
             echo json_encode(['status' => 'notmybranch--notatag-aintnobodygottimefordat']);
 
             return;
@@ -138,38 +161,6 @@ class Deploy
         }
 
         echo json_encode(['status' => 'gitpull-composerup-happylife']);
-    }
-
-    /**
-     * Checks whether  an incoming request is authorized i.e. whether it's coming from GitHub.
-     *
-     * @see https://help.github.com/articles/what-ip-addresses-does-github-use-that-i-should-whitelist/
-     *
-     * @return bool
-     */
-    protected function checkValidRequest() : bool
-    {
-        $request = Request::createFromGlobals();
-
-        $originatingIp = $request->server->has('HTTP_CF_CONNECTING_IP') ? $request->server->get('HTTP_CF_CONNECTING_IP') : $request->server->get('REMOTE_ADDR');
-
-        return IpUtils::checkIp($originatingIp, ['192.30.252.0/22', '2620:112:3000::/44']);
-    }
-
-    /**
-     * Checks whether the branch in the payload matches this pikapp installation.
-     *
-     * @return bool
-     */
-    protected function checkBranch() : bool
-    {
-        if ($this->branch === 'master') {
-            return strpos($this->payload['ref'], 'refs/tags/') !== false;
-        } elseif ($this->branch === 'dev-master') {
-            return $this->payload['ref'] === 'refs/heads/master';
-        } else {
-            return $this->payload['ref'] === 'refs/heads/'.$this->branch;
-        }
     }
 
     /**
