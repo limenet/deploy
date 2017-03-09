@@ -2,6 +2,8 @@
 
 use limenet\Deploy\Deploy;
 use PHPUnit\Framework\TestCase;
+use limenet\Deploy\Strategies\AlwaysGoodStrategy;
+use limenet\Deploy\Strategies\AlwaysBadStrategy;
 
 class DeployTest extends TestCase
 {
@@ -76,5 +78,34 @@ class DeployTest extends TestCase
         $this->assertTrue($deploy->addAdapter($adapter));
 
         $this->assertTrue($deploy->isAdapterAdded($adapter));
+    }
+
+    public function testStrategyNotSet() : void
+    {
+        $this->expectException(Exception::class);
+        (new Deploy())->run();
+    }
+
+    public function testDoubleSetStrategy() : void
+    {
+        $deploy = new Deploy();
+        $this->assertTrue($deploy->setStrategy(new limenet\Deploy\Strategies\AlwaysGoodStrategy));
+        $this->assertFalse($deploy->setStrategy(new limenet\Deploy\Strategies\AlwaysGoodStrategy));
+    }
+
+    public function testAlwaysGoodStrategy() : void
+    {
+        $this->assertTrue((new Deploy())->setStrategy(new AlwaysGoodStrategy()));
+        $this->assertTrue((new AlwaysGoodStrategy())->checkValidRequest());
+        $this->assertTrue((new AlwaysGoodStrategy())->isTag());
+        $this->assertTrue((new AlwaysGoodStrategy())->isBranch('some-branch'));
+    }
+
+    public function testAlwaysBadStrategy() : void
+    {
+        $this->assertTrue((new Deploy())->setStrategy(new AlwaysBadStrategy()));
+        $this->assertFalse((new AlwaysBadStrategy())->checkValidRequest());
+        $this->assertFalse((new AlwaysBadStrategy())->isTag());
+        $this->assertFalse((new AlwaysBadStrategy())->isBranch('some-branch'));
     }
 }
