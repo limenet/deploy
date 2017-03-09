@@ -16,22 +16,33 @@ class Deploy
 
     private $payload;
 
-    private $telegram;
-
-    private $rollbar;
-
     private $version;
 
     private $cleanCache;
 
-    private $postDeployAdapters;
+    private $postDeployAdapters = [];
 
-    public function addAdapter(AdapterInterface $adapter) : void
+    public function addAdapter(AdapterInterface $adapter) : bool
     {
         $reflect = new ReflectionClass($adapter);
         if ($reflect->implementsInterface(PostDeployAdapterInterface::class)) {
             $this->postDeployAdapters[] = $adapter;
+
+            return true;
         }
+
+        return false;
+    }
+
+    public function checkAdapterAdded(AdapterInterface $adapter) : bool
+    {
+        foreach ($this->postDeployAdapters as $loadedAdapter) {
+            if ($adapter instanceof $loadedAdapter) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public function getBasepath() : string
@@ -39,9 +50,11 @@ class Deploy
         return $this->basepath;
     }
 
-    public function setBasepath(string $basepath) : void
+    public function setBasepath(string $basepath) : bool
     {
         $this->basepath = $basepath;
+
+        return true;
     }
 
     public function getBranch() : string
@@ -49,9 +62,11 @@ class Deploy
         return $this->branch;
     }
 
-    public function setBranch(string $branch) : void
+    public function setBranch(string $branch) : bool
     {
         $this->branch = $branch;
+
+        return true;
     }
 
     public function getEnv() : string
@@ -59,19 +74,25 @@ class Deploy
         return $this->env;
     }
 
-    public function setEnv(string $env) : void
+    public function setEnv(string $env) : bool
     {
         $this->env = $env;
+
+        return true;
     }
 
-    public function setVersion(callable $version) : void
+    public function setVersion(callable $version) : bool
     {
         $this->version = $version;
+
+        return true;
     }
 
-    public function setCleanCache(callable $cleanCache) : void
+    public function setCleanCache(callable $cleanCache) : bool
     {
         $this->cleanCache = $cleanCache;
+
+        return true;
     }
 
     public function getVersion()
@@ -101,7 +122,7 @@ class Deploy
 
         header('Content-Type: text/json');
 
-        $this->payload = json_decode(Request::createFromGlobals()->request->get('payload') ?? $json, true);
+        $this->payload = json_decode(Request::createFromGlobals()->request->get('payload'), true);
 
         if (!$this->checkBranch()) {
             echo json_encode(['status' => 'notmybranch--notatag-aintnobodygottimefordat']);
@@ -114,10 +135,6 @@ class Deploy
 
         foreach ($this->postDeployAdapters as $adapter) {
             $adapter->run($this, $this->payload);
-        }
-
-        if (!empty($this->rollbar)) {
-            $this->rollbarDeploy();
         }
 
         echo json_encode(['status' => 'gitpull-composerup-happylife']);
@@ -136,7 +153,7 @@ class Deploy
 
         $originatingIp = $request->server->has('HTTP_CF_CONNECTING_IP') ? $request->server->get('HTTP_CF_CONNECTING_IP') : $request->server->get('REMOTE_ADDR');
 
-        return $isIpAllowed = IpUtils::checkIp($originatingIp, ['192.30.252.0/22', '2620:112:3000::/44']);
+        return IpUtils::checkIp($originatingIp, ['192.30.252.0/22', '2620:112:3000::/44']);
     }
 
     /**
