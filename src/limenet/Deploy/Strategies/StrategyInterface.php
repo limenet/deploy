@@ -1,6 +1,6 @@
 <?php
 
-namespace limenet\Deploy;
+namespace limenet\Deploy\Strategies;
 
 interface StrategyInterface
 {
