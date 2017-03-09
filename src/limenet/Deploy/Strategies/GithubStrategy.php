@@ -39,4 +39,24 @@ class GithubStrategy implements StrategyInterface
     {
         return strpos($this->payload['ref'], 'refs/tags/') !== false;
     }
+
+    public function getCommitHash() : string
+    {
+        return $this->payload['head_commit']['id'] ?? '';
+    }
+
+    public function getCommitUrl() : string
+    {
+        return $this->payload['head_commit']['url'] ?? '';
+    }
+
+    public function getCommitMessage() : string
+    {
+        return $this->payload['head_commit']['message'] ?? '';
+    }
+
+    public function getCommitUsername() : string
+    {
+        return $this->payload['head_commit']['author']['username'] ?? '';
+    }
 }

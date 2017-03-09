@@ -18,6 +18,13 @@ class DeployTest extends TestCase
         $this->assertSame('master', $deploy->getBranch());
     }
 
+    public function testBasepathNotSet() : void
+    {
+        $this->expectException(Exception::class);
+        $deploy = new Deploy();
+        $deploy->getBasepath();
+    }
+
     public function testBasepathNonGit() : void
     {
         $this->expectException(Exception::class);
@@ -109,6 +116,10 @@ class DeployTest extends TestCase
         $this->assertTrue((new AlwaysGoodStrategy())->checkValidRequest());
         $this->assertTrue((new AlwaysGoodStrategy())->isTag());
         $this->assertTrue((new AlwaysGoodStrategy())->isBranch('some-branch'));
+        $this->assertSame('commit-hash', (new AlwaysGoodStrategy())->getCommitHash('commit-hash'));
+        $this->assertSame('commit-url', (new AlwaysGoodStrategy())->getCommitUrl('commit-url'));
+        $this->assertSame('commit-message', (new AlwaysGoodStrategy())->getCommitMessage('commit-message'));
+        $this->assertSame('commit-username', (new AlwaysGoodStrategy())->getCommitUsername('commit-username'));
     }
 
     public function testAlwaysBadStrategy() : void
@@ -117,6 +128,10 @@ class DeployTest extends TestCase
         $this->assertFalse((new AlwaysBadStrategy())->checkValidRequest());
         $this->assertFalse((new AlwaysBadStrategy())->isTag());
         $this->assertFalse((new AlwaysBadStrategy())->isBranch('some-branch'));
+        $this->assertSame('commit-hash', (new AlwaysBadStrategy())->getCommitHash('commit-hash'));
+        $this->assertSame('commit-url', (new AlwaysBadStrategy())->getCommitUrl('commit-url'));
+        $this->assertSame('commit-message', (new AlwaysBadStrategy())->getCommitMessage('commit-message'));
+        $this->assertSame('commit-username', (new AlwaysBadStrategy())->getCommitUsername('commit-username'));
     }
 
     public function testDeployAlwaysBadStrategy() : void
@@ -141,8 +156,12 @@ class DeployTest extends TestCase
     public function testGithubStrategyTag() : void
     {
         $emptyRequest = new Request([], [], [], [], [], []);
-        $branchRequest = new Request([], ['payload' => json_encode(['ref' => 'refs/heads/develop'])], [], [], [], []);
-        $tagRequest = new Request([], ['payload' => json_encode(['ref' => 'refs/tags/v4.2.0'])], [], [], [], []);
+        $branchRequest = new Request([], ['payload' => json_encode([
+            'ref' => 'refs/heads/develop',
+        ])], [], [], [], []);
+        $tagRequest = new Request([], ['payload' => json_encode([
+            'ref' => 'refs/tags/v4.2.0',
+        ])], [], [], [], []);
 
         $this->assertFalse((new GithubStrategy($emptyRequest))->isTag());
         $this->assertFalse((new GithubStrategy($branchRequest))->isTag());
@@ -152,9 +171,15 @@ class DeployTest extends TestCase
     public function testGithubStrategyBranch() : void
     {
         $emptyRequest = new Request([], [], [], [], [], []);
-        $developBranchRequest = new Request([], ['payload' => json_encode(['ref' => 'refs/heads/develop'])], [], [], [], []);
-        $masterBranchRequest = new Request([], ['payload' => json_encode(['ref' => 'refs/heads/master'])], [], [], [], []);
-        $tagRequest = new Request([], ['payload' => json_encode(['ref' => 'refs/tags/v4.2.0'])], [], [], [], []);
+        $developBranchRequest = new Request([], ['payload' => json_encode([
+            'ref' => 'refs/heads/develop',
+        ])], [], [], [], []);
+        $masterBranchRequest = new Request([], ['payload' => json_encode([
+            'ref' => 'refs/heads/master',
+        ])], [], [], [], []);
+        $tagRequest = new Request([], ['payload' => json_encode([
+            'ref' => 'refs/tags/v4.2.0',
+        ])], [], [], [], []);
 
         $this->assertFalse((new GithubStrategy($emptyRequest))->isBranch('some-branch'));
         $this->assertTrue((new GithubStrategy($developBranchRequest))->isBranch('develop'));
@@ -162,5 +187,30 @@ class DeployTest extends TestCase
         $this->assertFalse((new GithubStrategy($masterBranchRequest))->isBranch('master'));
         $this->assertFalse((new GithubStrategy($tagRequest))->isBranch('some-branch'));
         $this->assertTrue((new GithubStrategy($tagRequest))->isBranch('tag'));
+    }
+
+    public function testGithubStrategyCommitFields() : void
+    {
+        $emptyRequest = new Request([], [], [], [], [], []);
+        $commitRequest = new Request([], ['payload' => json_encode([
+            'head_commit' => [
+                'id' => 'deadbeef',
+                'url' => 'http://example.com',
+                'message' => 'hello world',
+                'author' => [
+                    'username' => 'John Doe',
+                ],
+            ],
+        ])], [], [], [], []);
+
+        $this->assertInternalType('string', (new GithubStrategy($emptyRequest))->getCommitHash());
+        $this->assertInternalType('string', (new GithubStrategy($emptyRequest))->getCommitUrl());
+        $this->assertInternalType('string', (new GithubStrategy($emptyRequest))->getCommitMessage());
+        $this->assertInternalType('string', (new GithubStrategy($emptyRequest))->getCommitUsername());
+
+        $this->assertSame('deadbeef', (new GithubStrategy($commitRequest))->getCommitHash());
+        $this->assertSame('http://example.com', (new GithubStrategy($commitRequest))->getCommitUrl());
+        $this->assertSame('hello world', (new GithubStrategy($commitRequest))->getCommitMessage());
+        $this->assertSame('John Doe', (new GithubStrategy($commitRequest))->getCommitUsername());
     }
 }
