@@ -194,10 +194,10 @@ class DeployTest extends TestCase
         $emptyRequest = new Request([], [], [], [], [], []);
         $commitRequest = new Request([], ['payload' => json_encode([
             'head_commit' => [
-                'id' => 'deadbeef',
-                'url' => 'http://example.com',
+                'id'      => 'deadbeef',
+                'url'     => 'http://example.com',
                 'message' => 'hello world',
-                'author' => [
+                'author'  => [
                     'username' => 'John Doe',
                 ],
             ],

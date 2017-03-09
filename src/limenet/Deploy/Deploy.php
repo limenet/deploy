@@ -5,7 +5,6 @@ namespace limenet\Deploy;
 use limenet\Deploy\Exceptions\UnauthorizedException;
 use limenet\Deploy\Strategies\StrategyInterface;
 use ReflectionClass;
-use Symfony\Component\HttpFoundation\Request;
 
 class Deploy
 {
