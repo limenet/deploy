@@ -9,4 +9,3 @@ before_script:
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
-  - travis_retry php vendor/bin/coveralls
