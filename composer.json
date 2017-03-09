@@ -15,6 +15,11 @@
             "limenet\\": "src/limenet/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "limenet\\": "tests/limenet"
+        }
+    },
     "license": "MIT",
     "authors": [
         {

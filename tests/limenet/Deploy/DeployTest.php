@@ -1,7 +1,9 @@
 <?php
 
 use limenet\Deploy\Deploy;
+use limenet\Deploy\Strategies\AlwaysGoodStrategy;
 use PHPUnit\Framework\TestCase;
+use limenet\Deploy\PostDeployAdapterTempFile;
 
 class DeployTest extends TestCase
 {
@@ -70,5 +72,16 @@ class DeployTest extends TestCase
     {
         $this->expectException(Exception::class);
         (new Deploy())->run();
+    }
+
+    public function testCompleteDeploy() : void
+    {
+        $deploy = new Deploy();
+        $deploy->setBasepath(BASEPATH);
+        $deploy->setStrategy(new AlwaysGoodStrategy());
+        $deploy->addAdapter(new PostDeployAdapterTempFile());
+        $this->assertTrue($deploy->run());
+        $this->assertFileExists(sys_get_temp_dir().'/limenet-deploy');
+        unlink(sys_get_temp_dir().'/limenet-deploy');
     }
 }
