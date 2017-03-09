@@ -5,6 +5,10 @@
     "require": {
         "symfony/http-foundation": "^3.1"
     },
+    "suggest": {
+        "limenet/deploy-telegram": "Get notified on Telegram about deploys",
+        "limenet/deploy-rollbar": "Notify Rollbar about deploys"
+    },
     "autoload": {
         "psr-4": {
             "limenet\\": "src/limenet/"
