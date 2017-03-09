@@ -132,7 +132,7 @@ class Deploy
         return false;
     }
 
-    public function run() : void
+    public function run() : bool
     {
         if (!$this->isStrategySet()) {
             throw new \Exception('No strategy set');
@@ -147,7 +147,7 @@ class Deploy
         $this->payload = json_decode(Request::createFromGlobals()->request->get('payload'), true);
 
         if (!$this->strategy->isBranch($this->getBranch())) {
-            return;
+            return false;
         }
 
         $this->updateCode();
@@ -157,7 +157,7 @@ class Deploy
             $adapter->run($this, $this->payload);
         }
 
-        echo json_encode(['status' => 'gitpull-composerup-happylife']);
+        return true;
     }
 
     /**
