@@ -16,12 +16,19 @@ class DeployTest extends TestCase
         $this->assertSame('master', $deploy->getBranch());
     }
 
-    public function testBasepath() : void
+    public function testBasepathNonGit() : void
+    {
+        $this->expectException(Exception::class);
+        $deploy = new Deploy();
+        $deploy->setBasepath(sys_get_temp_dir());
+    }
+
+    public function testBasepathIsGit() : void
     {
         $deploy = new Deploy();
-        $this->assertTrue($deploy->setBasepath(__DIR__));
+        $this->assertTrue($deploy->setBasepath(BASEPATH));
 
-        $this->assertSame(__DIR__, $deploy->getBasepath());
+        $this->assertSame(BASEPATH, $deploy->getBasepath());
     }
 
     public function testEnv() : void
@@ -81,7 +88,7 @@ class DeployTest extends TestCase
         $this->assertTrue($deploy->isAdapterAdded($adapter));
     }
 
-    public function testStrategyNotSet() : void
+    public function testIncompleteDeploy() : void
     {
         $this->expectException(Exception::class);
         (new Deploy())->run();
@@ -122,6 +129,7 @@ class DeployTest extends TestCase
     {
         $deploy = new Deploy();
         $deploy->setStrategy(new AlwaysGoodStrategy());
-        $deploy->run();
+        $deploy->setBasepath(BASEPATH);
+        $this->assertTrue($deploy->run());
     }
 }

@@ -66,14 +66,26 @@ class Deploy
 
     public function getBasepath() : string
     {
+        if (!$this->basepath) {
+            throw new \Exception('No basepath set.');
+        }
+
         return $this->basepath;
     }
 
     public function setBasepath(string $basepath) : bool
     {
+        if (!$this->checkDirectoryIsGit($basepath)) {
+            throw new \Exception('Directory has to be tracked in Git.');
+        }
         $this->basepath = $basepath;
 
         return true;
+    }
+
+    private function checkDirectoryIsGit(string $dir) : bool
+    {
+        return trim(shell_exec('cd '.$dir.' && git rev-parse --is-inside-work-tree 2>/dev/null')) === 'true';
     }
 
     public function getBranch() : string
@@ -132,11 +144,16 @@ class Deploy
         return false;
     }
 
-    public function run() : bool
+    private function preRun() : void
     {
         if (!$this->isStrategySet()) {
             throw new \Exception('No strategy set');
         }
+    }
+
+    public function run() : bool
+    {
+        $this->preRun();
 
         if (!$this->strategy->checkValidRequest()) {
             throw new UnauthorizedException;
