@@ -2,11 +2,12 @@
 
 namespace limenet\Deploy;
 
-interface AdapterInterface
+interface StrategyInterface
 {
     /**
      * Check whether the request is valid per-se.
-     **
+     **.
+     *
      * @return bool
      */
     public function checkValidRequest() : bool;
