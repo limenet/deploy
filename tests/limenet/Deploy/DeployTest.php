@@ -74,7 +74,7 @@ class DeployTest extends TestCase
         (new Deploy())->run();
     }
 
-    public function testCompleteDeploy() : void
+    private function getUpdateCodeMockedDeploy() : Deploy
     {
         $deploy = $this->getMockBuilder(Deploy::class)
             ->setMethods(['updateCode'])
@@ -83,9 +83,42 @@ class DeployTest extends TestCase
             ->method('updateCode')
             ->will($this->returnValue(['output' => 'mocked', 'returnValue' => '0']));
 
+        return $deploy;
+
+    }
+
+    public function testCompleteDeploy() : void
+    {
+        $deploy = $this->getUpdateCodeMockedDeploy();
+
+        $deploy->setBasepath(BASEPATH);
+        $deploy->setStrategy(new AlwaysGoodStrategy());
+        $this->assertTrue($deploy->run());
+    }
+
+    public function testCompleteDeployCleanCache() : void
+    {
+        $deploy = $this->getUpdateCodeMockedDeploy();
+
+        $deploy->setBasepath(BASEPATH);
+        $deploy->setStrategy(new AlwaysGoodStrategy());
+
+        $deploy->setCleanCache(function () {
+            // clear cache...
+            return 'cache cleaned';
+        });
+
+        $this->assertTrue($deploy->run());
+    }
+
+    public function testCompleteDeployAdapter() : void
+    {
+        $deploy = $this->getUpdateCodeMockedDeploy();
+
         $deploy->setBasepath(BASEPATH);
         $deploy->setStrategy(new AlwaysGoodStrategy());
         $deploy->addAdapter(new PostDeployAdapterTempFile());
+
         $this->assertTrue($deploy->run());
         $this->assertFileExists(sys_get_temp_dir().'/limenet-deploy');
         unlink(sys_get_temp_dir().'/limenet-deploy');

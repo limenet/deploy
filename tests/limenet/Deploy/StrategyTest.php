@@ -4,6 +4,7 @@ use limenet\Deploy\Deploy;
 use limenet\Deploy\Exceptions\UnauthorizedException;
 use limenet\Deploy\Strategies\AlwaysBadStrategy;
 use limenet\Deploy\Strategies\AlwaysGoodStrategy;
+use limenet\Deploy\Strategies\ValidRequestInvalidBranchTagStrategy;
 use limenet\Deploy\Strategies\GithubStrategy;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,36 +18,19 @@ class StrategyTest extends TestCase
         $this->assertFalse($deploy->setStrategy(new limenet\Deploy\Strategies\AlwaysGoodStrategy()));
     }
 
-    public function testAlwaysGoodStrategy() : void
-    {
-        $this->assertTrue((new Deploy())->setStrategy(new AlwaysGoodStrategy()));
-        $this->assertTrue((new AlwaysGoodStrategy())->checkValidRequest());
-        $this->assertTrue((new AlwaysGoodStrategy())->isTag());
-        $this->assertTrue((new AlwaysGoodStrategy())->isBranch('some-branch'));
-        $this->assertSame('commit-hash', (new AlwaysGoodStrategy())->getCommitHash('commit-hash'));
-        $this->assertSame('commit-url', (new AlwaysGoodStrategy())->getCommitUrl('commit-url'));
-        $this->assertSame('commit-message', (new AlwaysGoodStrategy())->getCommitMessage('commit-message'));
-        $this->assertSame('commit-username', (new AlwaysGoodStrategy())->getCommitUsername('commit-username'));
-    }
-
-    public function testAlwaysBadStrategy() : void
-    {
-        $this->assertTrue((new Deploy())->setStrategy(new AlwaysBadStrategy()));
-        $this->assertFalse((new AlwaysBadStrategy())->checkValidRequest());
-        $this->assertFalse((new AlwaysBadStrategy())->isTag());
-        $this->assertFalse((new AlwaysBadStrategy())->isBranch('some-branch'));
-        $this->assertSame('commit-hash', (new AlwaysBadStrategy())->getCommitHash('commit-hash'));
-        $this->assertSame('commit-url', (new AlwaysBadStrategy())->getCommitUrl('commit-url'));
-        $this->assertSame('commit-message', (new AlwaysBadStrategy())->getCommitMessage('commit-message'));
-        $this->assertSame('commit-username', (new AlwaysBadStrategy())->getCommitUsername('commit-username'));
-    }
-
     public function testDeployAlwaysBadStrategy() : void
     {
         $this->expectException(UnauthorizedException::class);
         $deploy = new Deploy();
         $deploy->setStrategy(new AlwaysBadStrategy());
         $deploy->run();
+    }
+
+    public function testDeployValidRequestInvalidBranchTag() : void
+    {
+        $deploy = new Deploy();
+        $deploy->setStrategy(new ValidRequestInvalidBranchTagStrategy());
+        $this->assertFalse($deploy->run());
     }
 
     public function testGithubStrategyValidRequest() : void
