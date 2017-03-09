@@ -37,7 +37,7 @@ class Deploy
 
     public function isStrategySet() : bool
     {
-        return is_null($this->strategy);
+        return isset($this->strategy);
     }
 
     public function addAdapter(AdapterInterface $adapter) : bool
