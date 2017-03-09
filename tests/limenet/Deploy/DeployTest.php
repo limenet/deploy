@@ -84,7 +84,6 @@ class DeployTest extends TestCase
             ->will($this->returnValue(['output' => 'mocked', 'returnValue' => '0']));
 
         return $deploy;
-
     }
 
     public function testCompleteDeploy() : void

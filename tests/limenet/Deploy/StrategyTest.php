@@ -3,9 +3,8 @@
 use limenet\Deploy\Deploy;
 use limenet\Deploy\Exceptions\UnauthorizedException;
 use limenet\Deploy\Strategies\AlwaysBadStrategy;
-use limenet\Deploy\Strategies\AlwaysGoodStrategy;
-use limenet\Deploy\Strategies\ValidRequestInvalidBranchTagStrategy;
 use limenet\Deploy\Strategies\GithubStrategy;
+use limenet\Deploy\Strategies\ValidRequestInvalidBranchTagStrategy;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
 
