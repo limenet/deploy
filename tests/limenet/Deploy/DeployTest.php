@@ -1,6 +1,7 @@
 <?php
 
 use limenet\Deploy\Deploy;
+use limenet\Deploy\Exceptions\UnauthorizedException;
 use limenet\Deploy\Strategies\AlwaysBadStrategy;
 use limenet\Deploy\Strategies\AlwaysGoodStrategy;
 use PHPUnit\Framework\TestCase;
@@ -107,5 +108,20 @@ class DeployTest extends TestCase
         $this->assertFalse((new AlwaysBadStrategy())->checkValidRequest());
         $this->assertFalse((new AlwaysBadStrategy())->isTag());
         $this->assertFalse((new AlwaysBadStrategy())->isBranch('some-branch'));
+    }
+
+    public function testDeployAlwaysBadStrategy() : void
+    {
+        $this->expectException(UnauthorizedException::class);
+        $deploy = new Deploy();
+        $deploy->setStrategy(new AlwaysBadStrategy());
+        $deploy->run();
+    }
+
+    public function testDeployAlwaysGoodStrategy() : void
+    {
+        $deploy = new Deploy();
+        $deploy->setStrategy(new AlwaysGoodStrategy());
+        $deploy->run();
     }
 }

@@ -3,6 +3,7 @@
 namespace limenet\Deploy;
 
 use limenet\Deploy\Strategies\StrategyInterface;
+use limenet\Deploy\Exceptions\UnauthorizedException;
 use ReflectionClass;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -138,8 +139,7 @@ class Deploy
         }
 
         if (!$this->strategy->checkValidRequest()) {
-            header('HTTP/1.1 403 Unauthorized', true, 403);
-            die();
+            throw new UnauthorizedException;
         }
 
         header('Content-Type: text/json');
@@ -147,8 +147,6 @@ class Deploy
         $this->payload = json_decode(Request::createFromGlobals()->request->get('payload'), true);
 
         if (!$this->strategy->isBranch($this->getBranch())) {
-            echo json_encode(['status' => 'notmybranch--notatag-aintnobodygottimefordat']);
-
             return;
         }
 
