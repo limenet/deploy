@@ -142,8 +142,6 @@ class Deploy
             throw new UnauthorizedException;
         }
 
-        header('Content-Type: text/json');
-
         $this->payload = json_decode(Request::createFromGlobals()->request->get('payload'), true);
 
         if (!$this->strategy->isBranch($this->getBranch())) {
