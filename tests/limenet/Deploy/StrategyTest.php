@@ -10,7 +10,6 @@ use Symfony\Component\HttpFoundation\Request;
 
 class StrategyTest extends TestCase
 {
-
     public function testDoubleSetStrategy() : void
     {
         $deploy = new Deploy();
@@ -102,10 +101,10 @@ class StrategyTest extends TestCase
         $emptyRequest = new Request([], [], [], [], [], []);
         $commitRequest = new Request([], ['payload' => json_encode([
             'head_commit' => [
-                'id' => 'deadbeef',
-                'url' => 'http://example.com',
+                'id'      => 'deadbeef',
+                'url'     => 'http://example.com',
                 'message' => 'hello world',
-                'author' => [
+                'author'  => [
                     'username' => 'John Doe',
                 ],
             ],
