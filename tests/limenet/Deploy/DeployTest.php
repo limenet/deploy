@@ -3,10 +3,10 @@
 use limenet\Deploy\Deploy;
 use limenet\Deploy\Exceptions\UnauthorizedException;
 use limenet\Deploy\Strategies\AlwaysBadStrategy;
-use Symfony\Component\HttpFoundation\Request;
 use limenet\Deploy\Strategies\AlwaysGoodStrategy;
 use limenet\Deploy\Strategies\GithubStrategy;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\HttpFoundation\Request;
 
 class DeployTest extends TestCase
 {
@@ -141,8 +141,8 @@ class DeployTest extends TestCase
     public function testGithubStrategyTag() : void
     {
         $emptyRequest = new Request([], [], [], [], [], []);
-        $branchRequest = new Request([], ['payload' => json_encode(["ref" => "refs/heads/develop"])], [], [], [], []);
-        $tagRequest = new Request([], ['payload' => json_encode(["ref" => "refs/tags/v4.2.0"])], [], [], [], []);
+        $branchRequest = new Request([], ['payload' => json_encode(['ref' => 'refs/heads/develop'])], [], [], [], []);
+        $tagRequest = new Request([], ['payload' => json_encode(['ref' => 'refs/tags/v4.2.0'])], [], [], [], []);
 
         $this->assertFalse((new GithubStrategy($emptyRequest))->isTag());
         $this->assertFalse((new GithubStrategy($branchRequest))->isTag());
@@ -152,9 +152,9 @@ class DeployTest extends TestCase
     public function testGithubStrategyBranch() : void
     {
         $emptyRequest = new Request([], [], [], [], [], []);
-        $developBranchRequest = new Request([], ['payload' => json_encode(["ref" => "refs/heads/develop"])], [], [], [], []);
-        $masterBranchRequest = new Request([], ['payload' => json_encode(["ref" => "refs/heads/master"])], [], [], [], []);
-        $tagRequest = new Request([], ['payload' => json_encode(["ref" => "refs/tags/v4.2.0"])], [], [], [], []);
+        $developBranchRequest = new Request([], ['payload' => json_encode(['ref' => 'refs/heads/develop'])], [], [], [], []);
+        $masterBranchRequest = new Request([], ['payload' => json_encode(['ref' => 'refs/heads/master'])], [], [], [], []);
+        $tagRequest = new Request([], ['payload' => json_encode(['ref' => 'refs/tags/v4.2.0'])], [], [], [], []);
 
         $this->assertFalse((new GithubStrategy($emptyRequest))->isBranch('some-branch'));
         $this->assertTrue((new GithubStrategy($developBranchRequest))->isBranch('develop'));

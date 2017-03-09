@@ -2,8 +2,8 @@
 
 namespace limenet\Deploy;
 
-use limenet\Deploy\Strategies\StrategyInterface;
 use limenet\Deploy\Exceptions\UnauthorizedException;
+use limenet\Deploy\Strategies\StrategyInterface;
 use ReflectionClass;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -156,7 +156,7 @@ class Deploy
         $this->preRun();
 
         if (!$this->strategy->checkValidRequest()) {
-            throw new UnauthorizedException;
+            throw new UnauthorizedException();
         }
 
         $this->payload = json_decode(Request::createFromGlobals()->request->get('payload'), true);
