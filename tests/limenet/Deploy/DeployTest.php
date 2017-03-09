@@ -3,7 +3,9 @@
 use limenet\Deploy\Deploy;
 use limenet\Deploy\Exceptions\UnauthorizedException;
 use limenet\Deploy\Strategies\AlwaysBadStrategy;
+use Symfony\Component\HttpFoundation\Request;
 use limenet\Deploy\Strategies\AlwaysGoodStrategy;
+use limenet\Deploy\Strategies\GithubStrategy;
 use PHPUnit\Framework\TestCase;
 
 class DeployTest extends TestCase
@@ -125,11 +127,40 @@ class DeployTest extends TestCase
         $deploy->run();
     }
 
-    public function testDeployAlwaysGoodStrategy() : void
+    public function testGithubStrategyValidRequest() : void
     {
-        $deploy = new Deploy();
-        $deploy->setStrategy(new AlwaysGoodStrategy());
-        $deploy->setBasepath(BASEPATH);
-        $this->assertTrue($deploy->run());
+        $emptyRequest = new Request([], [], [], [], [], []);
+        $validIpRequest = new Request([], [], [], [], [], ['REMOTE_ADDR' => '192.30.252.0']);
+        $validIpRequestCf = new Request([], [], [], [], [], ['HTTP_CF_CONNECTING_IP' => '192.30.252.0']);
+
+        $this->assertFalse((new GithubStrategy($emptyRequest))->checkValidRequest());
+        $this->assertTrue((new GithubStrategy($validIpRequest))->checkValidRequest());
+        $this->assertTrue((new GithubStrategy($validIpRequestCf))->checkValidRequest());
+    }
+
+    public function testGithubStrategyTag() : void
+    {
+        $emptyRequest = new Request([], [], [], [], [], []);
+        $branchRequest = new Request([], ['payload' => json_encode(["ref" => "refs/heads/develop"])], [], [], [], []);
+        $tagRequest = new Request([], ['payload' => json_encode(["ref" => "refs/tags/v4.2.0"])], [], [], [], []);
+
+        $this->assertFalse((new GithubStrategy($emptyRequest))->isTag());
+        $this->assertFalse((new GithubStrategy($branchRequest))->isTag());
+        $this->assertTrue((new GithubStrategy($tagRequest))->isTag());
+    }
+
+    public function testGithubStrategyBranch() : void
+    {
+        $emptyRequest = new Request([], [], [], [], [], []);
+        $developBranchRequest = new Request([], ['payload' => json_encode(["ref" => "refs/heads/develop"])], [], [], [], []);
+        $masterBranchRequest = new Request([], ['payload' => json_encode(["ref" => "refs/heads/master"])], [], [], [], []);
+        $tagRequest = new Request([], ['payload' => json_encode(["ref" => "refs/tags/v4.2.0"])], [], [], [], []);
+
+        $this->assertFalse((new GithubStrategy($emptyRequest))->isBranch('some-branch'));
+        $this->assertTrue((new GithubStrategy($developBranchRequest))->isBranch('develop'));
+        $this->assertTrue((new GithubStrategy($masterBranchRequest))->isBranch('dev-master'));
+        $this->assertFalse((new GithubStrategy($masterBranchRequest))->isBranch('master'));
+        $this->assertFalse((new GithubStrategy($tagRequest))->isBranch('some-branch'));
+        $this->assertTrue((new GithubStrategy($tagRequest))->isBranch('tag'));
     }
 }
