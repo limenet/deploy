@@ -20,5 +20,5 @@ interface AdapterInterface
      *
      * @return bool
      */
-    public function run(Deploy $deploy, array $payload) : bool;
+    public function run(Deploy $deploy) : bool;
 }

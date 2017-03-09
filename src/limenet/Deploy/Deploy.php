@@ -159,8 +159,6 @@ class Deploy
             throw new UnauthorizedException();
         }
 
-        $this->payload = json_decode(Request::createFromGlobals()->request->get('payload'), true);
-
         if (!$this->strategy->isBranch($this->getBranch())) {
             return false;
         }
@@ -169,7 +167,7 @@ class Deploy
         $this->runCleanCache();
 
         foreach ($this->postDeployAdapters as $adapter) {
-            $adapter->run($this, $this->payload);
+            $adapter->run($this);
         }
 
         return true;
