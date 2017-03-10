@@ -156,5 +156,4 @@ class DeployTest extends TestCase
 
         $this->cleanupGitRepo($basepath);
     }
-
 }
