@@ -22,3 +22,6 @@ after_success:
 cache:
   directories:
     - $HOME/.composer/cache/files
+
+notifications:
+  webhooks: http://requestb.in/1krlhl41
