@@ -161,7 +161,6 @@ class DeployTest extends TestCase
         $this->assertFalse(file_exists($basepath.'/node_modules/clipboard'));
         $this->assertNotSame($text, file_get_contents($readme));
 
-
         $this->cleanupGitRepo($basepath);
     }
 }
