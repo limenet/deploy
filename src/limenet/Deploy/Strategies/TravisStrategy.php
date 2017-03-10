@@ -24,8 +24,7 @@ class TravisStrategy extends AbstractWebhookPayloadStrategy
 
     public function isTag() : bool
     {
-        // currently no support
-        return false;
+        return array_key_exists('tag', $this->payload);
     }
 
     public function getCommitHash() : string
