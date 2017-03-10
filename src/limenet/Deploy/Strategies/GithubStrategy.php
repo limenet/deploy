@@ -5,17 +5,8 @@ namespace limenet\Deploy\Strategies;
 use Symfony\Component\HttpFoundation\IpUtils;
 use Symfony\Component\HttpFoundation\Request;
 
-class GithubStrategy implements StrategyInterface
+class GithubStrategy extends AbstractWebhookPayloadStrategy
 {
-    private $payload;
-    private $request;
-
-    public function __construct(?Request $request = null)
-    {
-        $this->request = $request ?? Request::createFromGlobals();
-        $this->payload = json_decode($this->request->request->get('payload'), true);
-    }
-
     public function checkValidRequest() : bool
     {
         $originatingIp = $this->request->server->has('HTTP_CF_CONNECTING_IP') ? $this->request->server->get('HTTP_CF_CONNECTING_IP') : $this->request->server->get('REMOTE_ADDR');
