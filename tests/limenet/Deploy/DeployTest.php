@@ -110,7 +110,7 @@ class DeployTest extends TestCase
         $this->assertTrue($deploy->run());
     }
 
-    public function testCompleteDeployAdapter() : void
+    public function testCompleteDeployMockedAdapter() : void
     {
         $deploy = $this->getUpdateCodeMockedDeploy();
 
@@ -122,4 +122,39 @@ class DeployTest extends TestCase
         $this->assertFileExists(sys_get_temp_dir().'/limenet-deploy');
         unlink(sys_get_temp_dir().'/limenet-deploy');
     }
+
+    private function initializeGitRepo() : string
+    {
+        $repo = 'deploy-test-'.uniqid();
+        $basepath = sys_get_temp_dir().'/'.$repo;
+
+        shell_exec('git clone https://github.com/limenet/deploy-test '.$basepath);
+
+        return $basepath;
+    }
+
+    private function cleanupGitRepo(string $path) : void
+    {
+        shell_exec('rm '.$path.' -rf');
+    }
+
+    public function testCompleteDeployAdapter() : void
+    {
+        $basepath = $this->initializeGitRepo();
+        $deploy = new Deploy();
+        $deploy->setStrategy(new AlwaysGoodStrategy());
+        $deploy->setBasepath($basepath);
+        $deploy->setBranch('dev-master');
+
+        $this->assertTrue($deploy->run());
+        $composerData = json_decode(shell_exec('cd '.$basepath.' && composer show --format json'))->installed;
+        $this->assertSame(1, count($composerData));
+        $this->arrayHasKey('psr/log', $composerData);
+        $this->assertArrayNotHasKey('phpunit/php-timer', $composerData);
+        $this->assertTrue(file_exists($basepath.'/node_modules/jquery'));
+        $this->assertFalse(file_exists($basepath.'/node_modules/clipboard'));
+
+        $this->cleanupGitRepo($basepath);
+    }
+
 }
