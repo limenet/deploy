@@ -19,11 +19,13 @@ class GithubStrategy extends AbstractWebhookPayloadStrategy
     {
         if (in_array($branch, ['tag', 'master'], true)) {
             return $this->isTag();
-        } elseif ($branch === 'dev-master') {
-            return $this->payload['ref'] === 'refs/heads/master';
-        } else {
-            return $this->payload['ref'] === 'refs/heads/'.$branch;
         }
+
+        if ($branch === 'dev-master') {
+            return $this->payload['ref'] === 'refs/heads/master';
+        }
+
+        return $this->payload['ref'] === 'refs/heads/'.$branch;
     }
 
     public function isTag() : bool

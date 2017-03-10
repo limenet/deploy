@@ -13,11 +13,13 @@ class TravisStrategy extends AbstractWebhookPayloadStrategy
     {
         if (in_array($branch, ['tag', 'master'], true)) {
             return $this->isTag();
-        } elseif ($branch === 'dev-master') {
-            return $this->payload['branch'] === 'master';
-        } else {
-            return $this->payload['branch'] === $branch;
         }
+
+        if ($branch === 'dev-master') {
+            return $this->payload['branch'] === 'master';
+        }
+
+        return $this->payload['branch'] === $branch;
     }
 
     public function isTag() : bool
