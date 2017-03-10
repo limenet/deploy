@@ -1,58 +1,164 @@
 {
-  "id": 1,
-  "number": "1",
-  "status": null,
-  "started_at": null,
-  "finished_at": null,
-  "status_message": "Passed",
-  "commit": "62aae5f70ceee39123ef",
-  "branch": "master",
-  "message": "the commit message",
-  "compare_url": "https://github.com/svenfuchs/minimal/compare/master...develop",
-  "committed_at": "2011-11-11T11: 11: 11Z",
-  "committer_name": "Sven Fuchs",
-  "committer_email": "svenfuchs@artweb-design.de",
-  "author_name": "Sven Fuchs",
-  "author_email": "svenfuchs@artweb-design.de",
-  "type": "push",
-  "build_url": "https://travis-ci.org/svenfuchs/minimal/builds/1",
+  "id": 209818758,
   "repository": {
-    "id": 1,
-    "name": "minimal",
-    "owner_name": "svenfuchs",
-    "url": "http://github.com/svenfuchs/minimal"
-   },
-  "config": {
-    "notifications": {
-      "webhooks": ["http://evome.fr/notifications", "http://example.com/"]
-    }
+    "id": 10809000,
+    "name": "deploy",
+    "owner_name": "limenet",
+    "url": null
   },
+  "number": "39",
+  "config": {
+    "language": "php",
+    "sudo": "required",
+    "php": [
+      7.1,
+      "nightly"
+    ],
+    "before_install": [
+      "sudo apt-get install -y yarn"
+    ],
+    "before_script": [
+      "composer install"
+    ],
+    "after_success": [
+      "bash <(curl -s https://codecov.io/bash)"
+    ],
+    "cache": {
+      "directories": [
+        "$HOME/.composer/cache/files"
+      ]
+    },
+    "notifications": {
+      "webhooks": "http://requestb.in/1krlhl41"
+    },
+    ".result": "configured",
+    "group": "stable",
+    "dist": "precise"
+  },
+  "status": 0,
+  "result": 0,
+  "status_message": "Passed",
+  "result_message": "Passed",
+  "started_at": "2017-03-10T17:12:24Z",
+  "finished_at": "2017-03-10T17:15:47Z",
+  "duration": 149,
+  "build_url": "https://travis-ci.org/limenet/deploy/builds/209818758",
+  "commit_id": 60248534,
+  "commit": "7b52d38d29cf414f2128de9d378c2db811f0737f",
+  "base_commit": null,
+  "head_commit": null,
+  "branch": "master",
+  "message": "test webhook",
+  "compare_url": "https://github.com/limenet/deploy/compare/3cf17dc2fd0d...7b52d38d29cf",
+  "committed_at": "2017-03-10T17:07:45Z",
+  "author_name": "Linus Metzler",
+  "author_email": "linus.metzler@gmail.com",
+  "committer_name": "Linus Metzler",
+  "committer_email": "linus.metzler@gmail.com",
   "matrix": [
     {
-      "id": 2,
-      "repository_id": 1,
-      "number": "1.1",
-      "state": "created",
-      "started_at": null,
-      "finished_at": null,
+      "id": 209818759,
+      "repository_id": 10809000,
+      "parent_id": 209818758,
+      "number": "39.1",
+      "state": "finished",
       "config": {
+        "language": "php",
+        "sudo": "required",
+        "php": 7.1,
+        "before_install": [
+          "sudo apt-get install -y yarn"
+        ],
+        "before_script": [
+          "composer install"
+        ],
+        "after_success": [
+          "bash <(curl -s https://codecov.io/bash)"
+        ],
+        "cache": {
+          "directories": [
+            "$HOME/.composer/cache/files"
+          ]
+        },
         "notifications": {
-          "webhooks": ["http://evome.fr/notifications", "http://example.com/"]
-        }
+          "webhooks": "http://requestb.in/1krlhl41"
+        },
+        ".result": "configured",
+        "group": "stable",
+        "dist": "precise",
+        "os": "linux"
       },
-      "status": null,
-      "log": "",
-      "result": null,
-      "parent_id": 1,
-      "commit": "62aae5f70ceee39123ef",
+      "status": 0,
+      "result": 0,
+      "commit": "7b52d38d29cf414f2128de9d378c2db811f0737f",
       "branch": "master",
-      "message": "the commit message",
-      "committed_at": "2011-11-11T11: 11: 11Z",
-      "committer_name": "Sven Fuchs",
-      "committer_email": "svenfuchs@artweb-design.de",
-      "author_name": "Sven Fuchs",
-      "author_email": "svenfuchs@artweb-design.de",
-      "compare_url": "https://github.com/svenfuchs/minimal/compare/master...develop"
+      "message": "test webhook",
+      "compare_url": "https://github.com/limenet/deploy/compare/3cf17dc2fd0d...7b52d38d29cf",
+      "started_at": "2017-03-10T17:14:28Z",
+      "finished_at": "2017-03-10T17:15:47Z",
+      "committed_at": "2017-03-10T17:07:45Z",
+      "author_name": "Linus Metzler",
+      "author_email": "linus.metzler@gmail.com",
+      "committer_name": "Linus Metzler",
+      "committer_email": "linus.metzler@gmail.com",
+      "allow_failure": false
+    },
+    {
+      "id": 209818760,
+      "repository_id": 10809000,
+      "parent_id": 209818758,
+      "number": "39.2",
+      "state": "finished",
+      "config": {
+        "language": "php",
+        "sudo": "required",
+        "php": "nightly",
+        "before_install": [
+          "rm -rf ~/.nvm && git clone https://github.com/creationix/nvm.git ~/.nvm && (cd ~/.nvm && git checkout `git describe --abbrev=0 --tags`) && source ~/.nvm/nvm.sh && nvm install 6",
+          "curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -",
+          "echo \"deb http://dl.yarnpkg.com/debian/ stable main\" | sudo tee /etc/apt/sources.list.d/yarn.list",
+          "sudo apt-get update -y",
+          "sudo apt-get install -y yarn"
+        ],
+        "before_script": [
+          "composer install"
+        ],
+        "after_success": [
+          "bash <(curl -s https://codecov.io/bash)"
+        ],
+        "cache": {
+          "directories": [
+            "$HOME/.composer/cache/files"
+          ]
+        },
+        "notifications": {
+          "webhooks": "http://requestb.in/1krlhl41"
+        },
+        ".result": "configured",
+        "group": "stable",
+        "dist": "precise",
+        "os": "linux"
+      },
+      "status": 0,
+      "result": 0,
+      "commit": "7b52d38d29cf414f2128de9d378c2db811f0737f",
+      "branch": "master",
+      "message": "test webhook",
+      "compare_url": "https://github.com/limenet/deploy/compare/3cf17dc2fd0d...7b52d38d29cf",
+      "started_at": "2017-03-10T17:12:24Z",
+      "finished_at": "2017-03-10T17:13:34Z",
+      "committed_at": "2017-03-10T17:07:45Z",
+      "author_name": "Linus Metzler",
+      "author_email": "linus.metzler@gmail.com",
+      "committer_name": "Linus Metzler",
+      "committer_email": "linus.metzler@gmail.com",
+      "allow_failure": false
     }
-  ]
+  ],
+  "type": "push",
+  "state": "passed",
+  "pull_request": false,
+  "pull_request_number": null,
+  "pull_request_title": null,
+  "tag": null
 }
