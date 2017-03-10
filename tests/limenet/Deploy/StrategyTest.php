@@ -103,4 +103,19 @@ class StrategyTest extends TestCase
         $this->assertSame('hello world', (new GithubStrategy($commitRequest))->getCommitMessage());
         $this->assertSame('John Doe', (new GithubStrategy($commitRequest))->getCommitUsername());
     }
+
+    public function testGithubStrategyFullDelivery() : void
+    {
+        $this->assertFileExists(DATA_WEBHOOK_GITHUB);
+        $commitRequest = new Request([], ['payload' => file_get_contents(DATA_WEBHOOK_GITHUB)], [], [], [], []);
+
+        $this->assertSame('0d1a26e67d8f5eaf1f6ba5c57fc3c7d91ac0fd1c', (new GithubStrategy($commitRequest))->getCommitHash());
+        $this->assertSame('https://github.com/baxterthehacker/public-repo/commit/0d1a26e67d8f5eaf1f6ba5c57fc3c7d91ac0fd1c', (new GithubStrategy($commitRequest))->getCommitUrl());
+        $this->assertSame('Update README.md', (new GithubStrategy($commitRequest))->getCommitMessage());
+        $this->assertSame('baxterthehacker', (new GithubStrategy($commitRequest))->getCommitUsername());
+        $this->assertFalse((new GithubStrategy($commitRequest))->isTag());
+        $this->assertFalse((new GithubStrategy($commitRequest))->isBranch('master'));
+        $this->assertFalse((new GithubStrategy($commitRequest))->isBranch('dev-master'));
+        $this->assertTrue((new GithubStrategy($commitRequest))->isBranch('changes'));
+    }
 }
