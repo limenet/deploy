@@ -141,10 +141,16 @@ class DeployTest extends TestCase
     public function testCompleteDeployAdapter() : void
     {
         $basepath = $this->initializeGitRepo();
+        $readme = $basepath.'/README.md';
+        $text = 'Hello world!';
         $deploy = new Deploy();
         $deploy->setStrategy(new AlwaysGoodStrategy());
         $deploy->setBasepath($basepath);
         $deploy->setBranch('dev-master');
+
+        $this->assertNotSame($text, file_get_contents($readme));
+        file_put_contents($readme, $text);
+        $this->assertSame($text, file_get_contents($readme));
 
         $this->assertTrue($deploy->run());
         $composerData = json_decode(shell_exec('cd '.$basepath.' && composer show --format json'))->installed;
@@ -153,6 +159,8 @@ class DeployTest extends TestCase
         $this->assertArrayNotHasKey('phpunit/php-timer', $composerData);
         $this->assertTrue(file_exists($basepath.'/node_modules/jquery'));
         $this->assertFalse(file_exists($basepath.'/node_modules/clipboard'));
+        $this->assertNotSame($text, file_get_contents($readme));
+
 
         $this->cleanupGitRepo($basepath);
     }
