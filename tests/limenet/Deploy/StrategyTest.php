@@ -4,6 +4,7 @@ use limenet\Deploy\Deploy;
 use limenet\Deploy\Exceptions\UnauthorizedException;
 use limenet\Deploy\Strategies\AlwaysBadStrategy;
 use limenet\Deploy\Strategies\GithubStrategy;
+use limenet\Deploy\Strategies\TravisStrategy;
 use limenet\Deploy\Strategies\ValidRequestInvalidBranchTagStrategy;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
@@ -107,15 +108,34 @@ class StrategyTest extends TestCase
     public function testGithubStrategyFullDelivery() : void
     {
         $this->assertFileExists(DATA_WEBHOOK_GITHUB);
-        $commitRequest = new Request([], ['payload' => file_get_contents(DATA_WEBHOOK_GITHUB)], [], [], [], []);
+        $payload_json = file_get_contents(DATA_WEBHOOK_GITHUB);
+        $payload = json_decode($payload_json);
+        $commitRequest = new Request([], ['payload' => $payload_json], [], [], [], []);
 
-        $this->assertSame('0d1a26e67d8f5eaf1f6ba5c57fc3c7d91ac0fd1c', (new GithubStrategy($commitRequest))->getCommitHash());
-        $this->assertSame('https://github.com/baxterthehacker/public-repo/commit/0d1a26e67d8f5eaf1f6ba5c57fc3c7d91ac0fd1c', (new GithubStrategy($commitRequest))->getCommitUrl());
-        $this->assertSame('Update README.md', (new GithubStrategy($commitRequest))->getCommitMessage());
-        $this->assertSame('baxterthehacker', (new GithubStrategy($commitRequest))->getCommitUsername());
+        $this->assertSame($payload->head_commit->id, (new GithubStrategy($commitRequest))->getCommitHash());
+        $this->assertSame($payload->head_commit->url, (new GithubStrategy($commitRequest))->getCommitUrl());
+        $this->assertSame($payload->head_commit->message, (new GithubStrategy($commitRequest))->getCommitMessage());
+        $this->assertSame($payload->head_commit->author->username, (new GithubStrategy($commitRequest))->getCommitUsername());
         $this->assertFalse((new GithubStrategy($commitRequest))->isTag());
         $this->assertFalse((new GithubStrategy($commitRequest))->isBranch('master'));
         $this->assertFalse((new GithubStrategy($commitRequest))->isBranch('dev-master'));
         $this->assertTrue((new GithubStrategy($commitRequest))->isBranch('changes'));
+    }
+
+    public function testTravisStrategyFullDelivery() : void
+    {
+        $this->assertFileExists(DATA_WEBHOOK_TRAVIS);
+        $payload_json = file_get_contents(DATA_WEBHOOK_TRAVIS);
+        $payload = json_decode($payload_json);
+        $commitRequest = new Request([], ['payload' => $payload_json], [], [], [], []);
+
+        $this->assertSame($payload->commit, (new TravisStrategy($commitRequest))->getCommitHash());
+        $this->assertSame($payload->compare_url, (new TravisStrategy($commitRequest))->getCommitUrl());
+        $this->assertSame($payload->message, (new TravisStrategy($commitRequest))->getCommitMessage());
+        $this->assertSame($payload->author_name, (new TravisStrategy($commitRequest))->getCommitUsername());
+        $this->assertFalse((new TravisStrategy($commitRequest))->isTag());
+        $this->assertFalse((new TravisStrategy($commitRequest))->isBranch('master'));
+        $this->assertTrue((new TravisStrategy($commitRequest))->isBranch('dev-master'));
+        $this->assertFalse((new TravisStrategy($commitRequest))->isBranch('changes'));
     }
 }
