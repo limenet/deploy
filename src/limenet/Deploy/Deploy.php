@@ -183,7 +183,7 @@ class Deploy
         $updateMaster = 'ls'; // dummy
 
         if ($this->getBranch() !== 'master') {
-            $updateMaster = ' && git checkout master && git pull && git checkout '.$this->getBranch().' ';
+            $updateMaster = ' git checkout master && git pull && git checkout '.$this->getBranch().' ';
         }
 
         $commands = [

@@ -122,20 +122,37 @@ class StrategyTest extends TestCase
         $this->assertTrue((new GithubStrategy($commitRequest))->isBranch('changes'));
     }
 
-    public function testTravisStrategyFullDelivery() : void
+    public function testTravisStrategyFullDeliveryBranch() : void
     {
-        $this->assertFileExists(DATA_WEBHOOK_TRAVIS);
-        $payload_json = file_get_contents(DATA_WEBHOOK_TRAVIS);
+        $this->assertFileExists(DATA_WEBHOOK_TRAVIS_BRANCH);
+        $payload_json = file_get_contents(DATA_WEBHOOK_TRAVIS_BRANCH);
         $payload = json_decode($payload_json);
-        $commitRequest = new Request([], ['payload' => $payload_json], [], [], [], []);
+        $branchRequest = new Request([], ['payload' => $payload_json], [], [], [], []);
 
-        $this->assertSame($payload->commit, (new TravisStrategy($commitRequest))->getCommitHash());
-        $this->assertSame($payload->compare_url, (new TravisStrategy($commitRequest))->getCommitUrl());
-        $this->assertSame($payload->message, (new TravisStrategy($commitRequest))->getCommitMessage());
-        $this->assertSame($payload->author_name, (new TravisStrategy($commitRequest))->getCommitUsername());
-        $this->assertFalse((new TravisStrategy($commitRequest))->isTag());
-        $this->assertFalse((new TravisStrategy($commitRequest))->isBranch('master'));
-        $this->assertTrue((new TravisStrategy($commitRequest))->isBranch('dev-master'));
-        $this->assertFalse((new TravisStrategy($commitRequest))->isBranch('changes'));
+        $this->assertSame($payload->commit, (new TravisStrategy($branchRequest))->getCommitHash());
+        $this->assertSame($payload->compare_url, (new TravisStrategy($branchRequest))->getCommitUrl());
+        $this->assertSame($payload->message, (new TravisStrategy($branchRequest))->getCommitMessage());
+        $this->assertSame($payload->author_name, (new TravisStrategy($branchRequest))->getCommitUsername());
+        $this->assertFalse((new TravisStrategy($branchRequest))->isTag());
+        $this->assertFalse((new TravisStrategy($branchRequest))->isBranch('master'));
+        $this->assertTrue((new TravisStrategy($branchRequest))->isBranch('dev-master'));
+        $this->assertFalse((new TravisStrategy($branchRequest))->isBranch('changes'));
+    }
+
+    public function testTravisStrategyFullDeliveryTag() : void
+    {
+        $this->assertFileExists(DATA_WEBHOOK_TRAVIS_TAG);
+        $payload_json = file_get_contents(DATA_WEBHOOK_TRAVIS_TAG);
+        $payload = json_decode($payload_json);
+        $tagRequest = new Request([], ['payload' => $payload_json], [], [], [], []);
+
+        $this->assertSame($payload->commit, (new TravisStrategy($tagRequest))->getCommitHash());
+        $this->assertSame($payload->compare_url, (new TravisStrategy($tagRequest))->getCommitUrl());
+        $this->assertSame($payload->message, (new TravisStrategy($tagRequest))->getCommitMessage());
+        $this->assertSame($payload->author_name, (new TravisStrategy($tagRequest))->getCommitUsername());
+        $this->assertTrue((new TravisStrategy($tagRequest))->isTag());
+        $this->assertTrue((new TravisStrategy($tagRequest))->isBranch('master'));
+        $this->assertFalse((new TravisStrategy($tagRequest))->isBranch('dev-master'));
+        $this->assertFalse((new TravisStrategy($tagRequest))->isBranch('changes'));
     }
 }
