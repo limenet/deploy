@@ -3,7 +3,6 @@
 namespace limenet\Deploy\Strategies;
 
 use Symfony\Component\HttpFoundation\IpUtils;
-use Symfony\Component\HttpFoundation\Request;
 
 class GithubStrategy extends AbstractWebhookPayloadStrategy
 {
