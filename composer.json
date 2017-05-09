@@ -8,7 +8,8 @@
     },
     "suggest": {
         "limenet/deploy-telegram": "Get notified on Telegram about deploys",
-        "limenet/deploy-rollbar": "Notify Rollbar about deploys"
+        "limenet/deploy-rollbar": "Notify Rollbar about deploys",
+        "limenet/git-version": "Get current version based on the Git repository"
     },
     "autoload": {
         "psr-4": {
