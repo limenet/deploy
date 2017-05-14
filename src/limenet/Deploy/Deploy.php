@@ -20,7 +20,7 @@ class Deploy
 
     private $postDeployAdapters = [];
 
-    private $strategy;
+    public $strategy;
 
     public function setStrategy(StrategyInterface $strategy) : bool
     {
