@@ -11,7 +11,7 @@ class GithubStrategy extends AbstractWebhookPayloadStrategy
         $originatingIp = $this->request->server->has('HTTP_CF_CONNECTING_IP') ? $this->request->server->get('HTTP_CF_CONNECTING_IP') : $this->request->server->get('REMOTE_ADDR');
 
         // https://help.github.com/articles/what-ip-addresses-does-github-use-that-i-should-whitelist/
-        return IpUtils::checkIp($originatingIp, ['192.30.252.0/22', '2620:112:3000::/44']);
+        return IpUtils::checkIp($originatingIp, ['192.30.252.0/22', '185.199.108.0/22', '2620:112:3000::/44']);
     }
 
     public function isBranch(string $branch) : bool
