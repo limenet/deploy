@@ -24,3 +24,6 @@ after_success:
 cache:
   directories:
     - $HOME/.composer/cache/files
+
+notifications:
+  webhooks: https://ci-notification.limenet.xyz/dev/webhook
