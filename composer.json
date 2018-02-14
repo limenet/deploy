@@ -4,7 +4,7 @@
     "type": "library",
     "require": {
         "php": ">=7.1",
-        "symfony/http-foundation": "^3.1"
+        "symfony/http-foundation": "^3.1 | ^4.0"
     },
     "suggest": {
         "limenet/deploy-telegram": "Get notified on Telegram about deploys",
