@@ -94,10 +94,10 @@ class StrategyTest extends TestCase
             ],
         ])], [], [], [], []);
 
-        $this->assertInternalType('string', (new GithubStrategy($emptyRequest))->getCommitHash());
-        $this->assertInternalType('string', (new GithubStrategy($emptyRequest))->getCommitUrl());
-        $this->assertInternalType('string', (new GithubStrategy($emptyRequest))->getCommitMessage());
-        $this->assertInternalType('string', (new GithubStrategy($emptyRequest))->getCommitUsername());
+        $this->assertIsString((new GithubStrategy($emptyRequest))->getCommitHash());
+        $this->assertIsString((new GithubStrategy($emptyRequest))->getCommitUrl());
+        $this->assertIsString((new GithubStrategy($emptyRequest))->getCommitMessage());
+        $this->assertIsString((new GithubStrategy($emptyRequest))->getCommitUsername());
 
         $this->assertSame('deadbeef', (new GithubStrategy($commitRequest))->getCommitHash());
         $this->assertSame('http://example.com', (new GithubStrategy($commitRequest))->getCommitUrl());
