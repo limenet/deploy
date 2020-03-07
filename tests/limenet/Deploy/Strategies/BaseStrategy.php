@@ -4,22 +4,22 @@ namespace limenet\Deploy\Strategies;
 
 abstract class BaseStrategy implements StrategyInterface
 {
-    public function getCommitHash() : string
+    public function getCommitHash(): string
     {
         return 'commit-hash';
     }
 
-    public function getCommitUrl() : string
+    public function getCommitUrl(): string
     {
         return 'commit-url';
     }
 
-    public function getCommitMessage() : string
+    public function getCommitMessage(): string
     {
         return 'commit-message';
     }
 
-    public function getCommitUsername() : string
+    public function getCommitUsername(): string
     {
         return 'commit-username';
     }

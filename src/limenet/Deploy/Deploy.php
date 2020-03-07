@@ -22,7 +22,7 @@ class Deploy
 
     public $strategy;
 
-    public function setStrategy(StrategyInterface $strategy) : bool
+    public function setStrategy(StrategyInterface $strategy): bool
     {
         if ($this->strategy) {
             return false;
@@ -33,12 +33,12 @@ class Deploy
         return true;
     }
 
-    public function isStrategySet() : bool
+    public function isStrategySet(): bool
     {
         return isset($this->strategy);
     }
 
-    public function addAdapter(AdapterInterface $adapter) : bool
+    public function addAdapter(AdapterInterface $adapter): bool
     {
         $reflect = new ReflectionClass($adapter);
         if ($reflect->implementsInterface(PostDeployAdapterInterface::class)) {
@@ -50,7 +50,7 @@ class Deploy
         return false;
     }
 
-    public function isAdapterAdded(AdapterInterface $adapter) : bool
+    public function isAdapterAdded(AdapterInterface $adapter): bool
     {
         foreach ($this->postDeployAdapters as $loadedAdapter) {
             if ($adapter instanceof $loadedAdapter) {
@@ -61,7 +61,7 @@ class Deploy
         return false;
     }
 
-    public function getBasepath() : string
+    public function getBasepath(): string
     {
         if (!$this->basepath) {
             throw new \Exception('No basepath set.');
@@ -70,7 +70,7 @@ class Deploy
         return $this->basepath;
     }
 
-    public function setBasepath(string $basepath) : bool
+    public function setBasepath(string $basepath): bool
     {
         if (!$this->checkDirectoryIsGit($basepath)) {
             throw new \Exception('Directory has to be tracked in Git.');
@@ -80,43 +80,43 @@ class Deploy
         return true;
     }
 
-    private function checkDirectoryIsGit(string $dir) : bool
+    private function checkDirectoryIsGit(string $dir): bool
     {
         return trim(shell_exec('cd '.$dir.' && git rev-parse --is-inside-work-tree 2>/dev/null')) === 'true';
     }
 
-    public function getBranch() : string
+    public function getBranch(): string
     {
         return $this->branch;
     }
 
-    public function setBranch(string $branch) : bool
+    public function setBranch(string $branch): bool
     {
         $this->branch = $branch;
 
         return true;
     }
 
-    public function getEnv() : string
+    public function getEnv(): string
     {
         return $this->env;
     }
 
-    public function setEnv(string $env) : bool
+    public function setEnv(string $env): bool
     {
         $this->env = $env;
 
         return true;
     }
 
-    public function setVersion(callable $version) : bool
+    public function setVersion(callable $version): bool
     {
         $this->version = $version;
 
         return true;
     }
 
-    public function setCleanCache(callable $cleanCache) : bool
+    public function setCleanCache(callable $cleanCache): bool
     {
         $this->cleanCache = $cleanCache;
 
@@ -141,14 +141,14 @@ class Deploy
         return false;
     }
 
-    private function preRun() : void
+    private function preRun(): void
     {
         if (!$this->isStrategySet()) {
             throw new \Exception('No strategy set');
         }
     }
 
-    public function run() : bool
+    public function run(): bool
     {
         $this->preRun();
 
@@ -175,7 +175,7 @@ class Deploy
      *
      * @return array
      */
-    protected function updateCode() : array
+    protected function updateCode(): array
     {
         $output = [];
         $returnValue = 0;

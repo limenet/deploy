@@ -6,7 +6,7 @@ use Symfony\Component\HttpFoundation\IpUtils;
 
 class GithubStrategy extends AbstractWebhookPayloadStrategy
 {
-    public function checkValidRequest() : bool
+    public function checkValidRequest(): bool
     {
         $originatingIp = $this->request->server->has('HTTP_CF_CONNECTING_IP') ? $this->request->server->get('HTTP_CF_CONNECTING_IP') : $this->request->server->get('REMOTE_ADDR');
 
@@ -14,7 +14,7 @@ class GithubStrategy extends AbstractWebhookPayloadStrategy
         return IpUtils::checkIp($originatingIp, ['192.30.252.0/22', '185.199.108.0/22', '140.82.112.0/20']);
     }
 
-    public function isBranch(string $branch) : bool
+    public function isBranch(string $branch): bool
     {
         if (in_array($branch, ['tag', 'master'], true)) {
             return $this->isTag();
@@ -27,27 +27,27 @@ class GithubStrategy extends AbstractWebhookPayloadStrategy
         return $this->payload['ref'] === 'refs/heads/'.$branch;
     }
 
-    public function isTag() : bool
+    public function isTag(): bool
     {
         return strpos($this->payload['ref'], 'refs/tags/') !== false;
     }
 
-    public function getCommitHash() : string
+    public function getCommitHash(): string
     {
         return $this->payload['head_commit']['id'] ?? '';
     }
 
-    public function getCommitUrl() : string
+    public function getCommitUrl(): string
     {
         return $this->payload['head_commit']['url'] ?? '';
     }
 
-    public function getCommitMessage() : string
+    public function getCommitMessage(): string
     {
         return $this->payload['head_commit']['message'] ?? '';
     }
 
-    public function getCommitUsername() : string
+    public function getCommitUsername(): string
     {
         return $this->payload['head_commit']['author']['username'] ?? '';
     }

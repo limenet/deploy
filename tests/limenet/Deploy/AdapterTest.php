@@ -5,7 +5,7 @@ use PHPUnit\Framework\TestCase;
 
 class AdapterTest extends TestCase
 {
-    public function testAddAdapter() : void
+    public function testAddAdapter(): void
     {
         $adapter = $this->getMockBuilder('limenet\Deploy\AdapterInterface')->getMock();
 
@@ -18,7 +18,7 @@ class AdapterTest extends TestCase
         $this->assertFalse($deploy->isAdapterAdded($adapter));
     }
 
-    public function testAddPostDeployAdapter() : void
+    public function testAddPostDeployAdapter(): void
     {
         $adapter = $this->getMockBuilder('limenet\Deploy\PostDeployAdapterInterface')->getMock();
 

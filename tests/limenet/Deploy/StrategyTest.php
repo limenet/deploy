@@ -11,14 +11,14 @@ use Symfony\Component\HttpFoundation\Request;
 
 class StrategyTest extends TestCase
 {
-    public function testDoubleSetStrategy() : void
+    public function testDoubleSetStrategy(): void
     {
         $deploy = new Deploy();
         $this->assertTrue($deploy->setStrategy(new limenet\Deploy\Strategies\AlwaysGoodStrategy()));
         $this->assertFalse($deploy->setStrategy(new limenet\Deploy\Strategies\AlwaysGoodStrategy()));
     }
 
-    public function testDeployAlwaysBadStrategy() : void
+    public function testDeployAlwaysBadStrategy(): void
     {
         $this->expectException(UnauthorizedException::class);
         $deploy = new Deploy();
@@ -26,14 +26,14 @@ class StrategyTest extends TestCase
         $deploy->run();
     }
 
-    public function testDeployValidRequestInvalidBranchTag() : void
+    public function testDeployValidRequestInvalidBranchTag(): void
     {
         $deploy = new Deploy();
         $deploy->setStrategy(new ValidRequestInvalidBranchTagStrategy());
         $this->assertFalse($deploy->run());
     }
 
-    public function testGithubStrategyValidRequest() : void
+    public function testGithubStrategyValidRequest(): void
     {
         $emptyRequest = new Request([], [], [], [], [], []);
         $validIpRequest = new Request([], [], [], [], [], ['REMOTE_ADDR' => '192.30.252.0']);
@@ -44,7 +44,7 @@ class StrategyTest extends TestCase
         $this->assertTrue((new GithubStrategy($validIpRequestCf))->checkValidRequest());
     }
 
-    public function testGithubStrategyTag() : void
+    public function testGithubStrategyTag(): void
     {
         $emptyRequest = new Request([], [], [], [], [], []);
         $branchRequest = new Request([], ['payload' => json_encode([
@@ -59,7 +59,7 @@ class StrategyTest extends TestCase
         $this->assertTrue((new GithubStrategy($tagRequest))->isTag());
     }
 
-    public function testGithubStrategyBranch() : void
+    public function testGithubStrategyBranch(): void
     {
         $emptyRequest = new Request([], [], [], [], [], []);
         $developBranchRequest = new Request([], ['payload' => json_encode([
@@ -80,7 +80,7 @@ class StrategyTest extends TestCase
         $this->assertTrue((new GithubStrategy($tagRequest))->isBranch('tag'));
     }
 
-    public function testGithubStrategyCommitFields() : void
+    public function testGithubStrategyCommitFields(): void
     {
         $emptyRequest = new Request([], [], [], [], [], []);
         $commitRequest = new Request([], ['payload' => json_encode([
@@ -105,7 +105,7 @@ class StrategyTest extends TestCase
         $this->assertSame('John Doe', (new GithubStrategy($commitRequest))->getCommitUsername());
     }
 
-    public function testGithubStrategyFullDelivery() : void
+    public function testGithubStrategyFullDelivery(): void
     {
         $this->assertFileExists(DATA_WEBHOOK_GITHUB);
         $payload_json = file_get_contents(DATA_WEBHOOK_GITHUB);
@@ -122,7 +122,7 @@ class StrategyTest extends TestCase
         $this->assertTrue((new GithubStrategy($commitRequest))->isBranch('changes'));
     }
 
-    public function testTravisStrategyFullDeliveryBranch() : void
+    public function testTravisStrategyFullDeliveryBranch(): void
     {
         $this->assertFileExists(DATA_WEBHOOK_TRAVIS_BRANCH);
         $payload_json = file_get_contents(DATA_WEBHOOK_TRAVIS_BRANCH);
@@ -139,7 +139,7 @@ class StrategyTest extends TestCase
         $this->assertFalse((new TravisStrategy($branchRequest))->isBranch('changes'));
     }
 
-    public function testTravisStrategyFullDeliveryTag() : void
+    public function testTravisStrategyFullDeliveryTag(): void
     {
         $this->assertFileExists(DATA_WEBHOOK_TRAVIS_TAG);
         $payload_json = file_get_contents(DATA_WEBHOOK_TRAVIS_TAG);
