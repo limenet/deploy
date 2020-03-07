@@ -11,7 +11,7 @@ interface AdapterInterface
      *
      * @return void
      */
-    public function config(array $config) : void;
+    public function config(array $config): void;
 
     /**
      * Run the adapter.
@@ -20,5 +20,5 @@ interface AdapterInterface
      *
      * @return bool
      */
-    public function run(Deploy $deploy) : bool;
+    public function run(Deploy $deploy): bool;
 }

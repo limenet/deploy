@@ -7,7 +7,7 @@ use PHPUnit\Framework\TestCase;
 
 class DeployTest extends TestCase
 {
-    public function testBranch() : void
+    public function testBranch(): void
     {
         $deploy = new Deploy();
         $this->assertTrue($deploy->setBranch('master'));
@@ -15,21 +15,21 @@ class DeployTest extends TestCase
         $this->assertSame('master', $deploy->getBranch());
     }
 
-    public function testBasepathNotSet() : void
+    public function testBasepathNotSet(): void
     {
         $this->expectException(Exception::class);
         $deploy = new Deploy();
         $deploy->getBasepath();
     }
 
-    public function testBasepathNonGit() : void
+    public function testBasepathNonGit(): void
     {
         $this->expectException(Exception::class);
         $deploy = new Deploy();
         $deploy->setBasepath(sys_get_temp_dir());
     }
 
-    public function testBasepathIsGit() : void
+    public function testBasepathIsGit(): void
     {
         $deploy = new Deploy();
         $this->assertTrue($deploy->setBasepath(BASEPATH));
@@ -37,7 +37,7 @@ class DeployTest extends TestCase
         $this->assertSame(BASEPATH, $deploy->getBasepath());
     }
 
-    public function testEnv() : void
+    public function testEnv(): void
     {
         $deploy = new Deploy();
         $this->assertTrue($deploy->setEnv('testing'));
@@ -45,7 +45,7 @@ class DeployTest extends TestCase
         $this->assertSame('testing', $deploy->getEnv());
     }
 
-    public function testVersion() : void
+    public function testVersion(): void
     {
         $deploy = new Deploy();
 
@@ -58,7 +58,7 @@ class DeployTest extends TestCase
         $this->assertSame('1.0.2-beta+deadbeef', $deploy->getVersion());
     }
 
-    public function testCleanCache() : void
+    public function testCleanCache(): void
     {
         $deploy = new Deploy();
 
@@ -68,13 +68,13 @@ class DeployTest extends TestCase
         }));
     }
 
-    public function testIncompleteDeploy() : void
+    public function testIncompleteDeploy(): void
     {
         $this->expectException(Exception::class);
         (new Deploy())->run();
     }
 
-    private function getUpdateCodeMockedDeploy() : Deploy
+    private function getUpdateCodeMockedDeploy(): Deploy
     {
         $deploy = $this->getMockBuilder(Deploy::class)
             ->setMethods(['updateCode'])
@@ -86,7 +86,7 @@ class DeployTest extends TestCase
         return $deploy;
     }
 
-    public function testCompleteDeploy() : void
+    public function testCompleteDeploy(): void
     {
         $deploy = $this->getUpdateCodeMockedDeploy();
 
@@ -95,7 +95,7 @@ class DeployTest extends TestCase
         $this->assertTrue($deploy->run());
     }
 
-    public function testCompleteDeployCleanCache() : void
+    public function testCompleteDeployCleanCache(): void
     {
         $deploy = $this->getUpdateCodeMockedDeploy();
 
@@ -110,7 +110,7 @@ class DeployTest extends TestCase
         $this->assertTrue($deploy->run());
     }
 
-    public function testCompleteDeployMockedAdapter() : void
+    public function testCompleteDeployMockedAdapter(): void
     {
         $deploy = $this->getUpdateCodeMockedDeploy();
 
@@ -123,7 +123,7 @@ class DeployTest extends TestCase
         unlink(sys_get_temp_dir().'/limenet-deploy');
     }
 
-    private function initializeGitRepo() : string
+    private function initializeGitRepo(): string
     {
         $repo = 'deploy-test-'.uniqid();
         $basepath = sys_get_temp_dir().'/'.$repo;
@@ -133,12 +133,12 @@ class DeployTest extends TestCase
         return $basepath;
     }
 
-    private function cleanupGitRepo(string $path) : void
+    private function cleanupGitRepo(string $path): void
     {
         shell_exec('rm '.$path.' -rf');
     }
 
-    public function testCompleteDeployAdapter() : void
+    public function testCompleteDeployAdapter(): void
     {
         $basepath = $this->initializeGitRepo();
         $readme = $basepath.'/README.md';
